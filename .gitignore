@@ -7,151 +7,66 @@
 # ----------
 # 构建目录和编译产物
 # ----------
-build/          # CMake生成的构建目录,包含临时文件和二进制产物
-*.obj           # 编译器生成的中间对象文件(无需共享，可重新编译生成)
-*.lib           # 静态库文件(由项目构建生成，无需提交)
-*.exe           # 可执行文件(由编译生成，不同平台可能不同)
-*.pdb           # 程序调试数据库文件(Visual Studio 生成，含调试信息)
-*.ilk           # 增量链接文件(Visual Studio 生成，编译过程临时文件)
+build/              # CMake生成的构建目录,包含临时文件和二进制产物
+*.obj               # 编译器生成的中间对象文件(无需共享，可重新编译生成)
+*.lib               # 静态库文件(由项目构建生成，无需提交)
+*.exe               # 可执行文件(由编译生成，不同平台可能不同)
+*.pdb               # 程序调试数据库文件(Visual Studio 生成，含调试信息)
+*.ilk               # 增量链接文件(Visual Studio 生成，编译过程临时文件)
 
 # ----------
 # 依赖管理目录
 # ----------
-node_modules/   # Node.js 依赖目录(通过 npm/yarn 自动生成，体积庞大且可复现)
+node_modules/       # Node.js 依赖目录(通过 npm/yarn 自动生成，体积庞大且可复现)
 
 # ----------
 # IDE/编辑器特定文件
 # ----------
-.vscode/        # VSCode工作区配置(含用户特定的调试、任务设置，不应共享)
-.idea/          # JetBrains IDE(如CLion)的配置文件
-*.user          # Visual Studio用户特定配置(如窗口布局、调试路径)
-*.suo           # Visual Studio解决方案用户选项(含本地缓存信息)
-*.sln           # Visual Studio解决方案文件(由 CMake 生成，避免手动管理冲突)
-*.vcxproj*      # Visual Studio项目文件(由 CMake 生成，避免手动管理冲突)
+.vscode/            # VSCode工作区配置(含用户特定的调试、任务设置，不应共享)
+.idea/              # JetBrains IDE(如CLion)的配置文件
+*.user              # Visual Studio用户特定配置(如窗口布局、调试路径)
+*.suo               # Visual Studio解决方案用户选项(含本地缓存信息)
+*.sln               # Visual Studio解决方案文件(由 CMake 生成，避免手动管理冲突)
+*.vcxproj*          # Visual Studio项目文件(由 CMake 生成，避免手动管理冲突)
 
 # ----------
 # 系统/临时文件
 # ----------
-.DS_Store       # macOS文件夹属性元数据(非跨平台必要文件)
-Thumbs.db       # Windows缩略图缓存文件
-*.log           # 日志文件(运行时生成，可能包含敏感信息)
-*.tmp           # 临时文件
+.DS_Store           # macOS文件夹属性元数据(非跨平台必要文件)
+Thumbs.db           # Windows缩略图缓存文件
+*.log               # 日志文件(运行时生成，可能包含敏感信息)
+*.tmp               # 临时文件
 
+# ----------
 # CMake生成文件
-build/
-out/
-.vs/
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
+# ----------
+CMakeFiles/         # CMake生成的临时文件和目录
+CMakeCache.txt      # CMake缓存文件
+cmake_install.cmake # CMake安装脚本
+Makefile            # CMake生成的Makefile
+*.cmake             # 所有CMake配置文件
 
-# 编译输出
-*.exe
-*.dll
-*.so
-*.dylib
-*.lib
-*.a
-*.o
-*.obj
-
-# IDE相关
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.swp
-*.swo
-*~
-
+# ----------
 # 文档生成
-docs/html/
-docs/latex/
-docs/man/
-docs/rtf/
+# ----------
+docs/_build/        # 文档构建输出目录
+docs/_static/       # 文档静态文件目录
+docs/_templates/    # 文档模板目录
+docs/api/_build/    # API文档构建输出目录
+docs/examples/_build/ # 示例文档构建输出目录
 
-# 临时文件
-*.log
-*.tmp
-*.temp
-.DS_Store
-Thumbs.db
-
-# 安装目录
-install/
-
+# ----------
 # 测试输出
-Testing/
-CTestTestfile.cmake
-DartConfiguration.tcl
+# ----------
+test_results/       # 测试结果目录
+coverage/           # 代码覆盖率报告目录
+*.test              # 测试输出文件
+Testing/            # CMake测试目录
+CTestTestfile.cmake # CTest测试文件
+DartConfiguration.tcl # CTest配置文件
 
-# 其他
-*.bak
-*.backup
-*.orig
-*.rej
-
-# CMake生成文件
-build/
-out/
-.vs/
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
-
-# CMake生成文件
-build/
-out/
-.vs/
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
-
-# CMake生成文件
-build/
-out/
-.vs/
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
-
-# CMake生成文件
-build/
-out/
-.vs/
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
-
-# CMake生成文件
-build/
-out/
-.vs/
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
+# ----------
+# 安装目录
+# ----------
+install/            # 安装目录，包含所有安装的文件
+dist/               # 分发目录，用于打包发布
