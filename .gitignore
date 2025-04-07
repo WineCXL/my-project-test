@@ -36,3 +36,62 @@ node_modules/   # Node.js 依赖目录(通过 npm/yarn 自动生成，体积庞�
 Thumbs.db       # Windows缩略图缓存文件
 *.log           # 日志文件(运行时生成，可能包含敏感信息)
 *.tmp           # 临时文件
+
+# CMake生成文件
+build/
+out/
+.vs/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+
+# 编译输出
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.o
+*.obj
+
+# IDE相关
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# 文档生成
+docs/html/
+docs/latex/
+docs/man/
+docs/rtf/
+
+# 临时文件
+*.log
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# 安装目录
+install/
+
+# 测试输出
+Testing/
+CTestTestfile.cmake
+DartConfiguration.tcl
+
+# 其他
+*.bak
+*.backup
+*.orig
+*.rej

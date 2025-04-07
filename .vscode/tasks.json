@@ -1,0 +1,77 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: 配置",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-S",
+                ".",
+                "-B",
+                "build",
+                "-G",
+                "Visual Studio 16 2019",
+                "-A",
+                "x64"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "CMake: 构建(Debug)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build",
+                "--config",
+                "Debug"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "CMake: 构建(Release)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build",
+                "--config",
+                "Release"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "CMake: 清理",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "build",
+                "--target",
+                "clean"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "运行: Debug",
+            "type": "process",
+            "command": "${workspaceFolder}/build/bin/Debug/miracl_example.exe",
+            "dependsOn": "CMake: 构建(Debug)",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "运行: Release",
+            "type": "process",
+            "command": "${workspaceFolder}/build/bin/Release/miracl_example.exe",
+            "dependsOn": "CMake: 构建(Release)",
+            "group": "test"
+        }
+    ]
+} 
