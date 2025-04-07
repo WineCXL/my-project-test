@@ -1,0 +1,18 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "words": [
+        "miracl",
+        "MIRACL",
+        "mirsys",
+        "mirvar",
+        "cotnum",
+        "mirkill"
+    ],
+    "ignorePaths": [
+        "**/node_modules/**",
+        "**/vscode-extension/**",
+        "**/.git/**",
+        "**/build/**"
+    ]
+} 
