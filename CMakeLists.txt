@@ -168,10 +168,6 @@ install(TARGETS miracl_example
     RUNTIME DESTINATION ${INSTALL_BIN_DIR}
 )
 
-# 添加测试支持
-enable_testing()
-add_subdirectory(src/tests)
-
 # 添加自定义命令，确保在构建前mirdef.h存在
 add_custom_command(
     TARGET miracl PRE_BUILD
@@ -198,7 +194,7 @@ cmake_install.cmake
 # 提示信息
 message(STATUS "配置完成。您可以使用以下命令构建项目：")
 message(STATUS "  mkdir build && cd build")
-message(STATUS "  cmake .. -G \"Visual Studio 16 2019\" -A x64")
+message(STATUS "  cmake ..")
 message(STATUS "  cmake --build . --config Debug")
 message(STATUS "  cmake --install . --config Debug")
 message(STATUS "或者直接在Visual Studio中打开文件夹并使用CMake集成功能。") 
