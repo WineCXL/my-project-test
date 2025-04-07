@@ -1,9 +1,89 @@
 {
-    "cmake.configureOnOpen": true,
+    "cmake.configureOnOpen": false,
+    "cmake.buildBeforeRun": false,
+    "cmake.automaticReconfigure": false,
+    "cmake.autoSelectActiveFolder": false,
+    "cmake.autoStartBuild": false,
+    "cmake.configureOnEdit": false,
+    "cmake.configureOnStartup": false,
+    "cmake.parallelJobs": 4,
     "cmake.buildDirectory": "${workspaceFolder}/build",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "files.exclude": {
         "**/build": false,
         "**/.vs": true
-    }
+    },
+    "cmake.installPrefix": "${workspaceFolder}/install",
+    "cmake.debugConfig": {
+        "stopAtEntry": true,
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb",
+        "setupCommands": [
+            {
+                "description": "为 gdb 启用整齐打印",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
+    "cmake.defaultVariants": {
+        "buildType": {
+            "default": "debug",
+            "description": "The build type.",
+            "choices": {
+                "debug": {
+                    "short": "Debug",
+                    "long": "Disable optimizations - include debug information",
+                    "buildType": "Debug"
+                },
+                "release": {
+                    "short": "Release",
+                    "long": "Optimize for speed - exclude debug information",
+                    "buildType": "Release"
+                },
+                "relWithDebInfo": {
+                    "short": "RelWithDebInfo",
+                    "long": "Optimize for speed - include debug information",
+                    "buildType": "RelWithDebInfo"
+                },
+                "minSizeRel": {
+                    "short": "MinSizeRel",
+                    "long": "Optimize for size - exclude debug information",
+                    "buildType": "MinSizeRel"
+                }
+            }
+        }
+    },
+    "cmake.autoRunTests": false,
+    "cmake.testing.enableAutoDiscoverOnOpen": false,
+    "cmake.testing.autoStartTests": false,
+    "cmake.testing.autoStopTests": false,
+    "cmake.testing.autoWatchOnStartup": false,
+    "cmake.testing.autoWatchOnConfigure": false,
+    "cmake.testing.autoWatchOnBuild": false,
+    "cmake.testing.autoWatchOnTest": false,
+    "cmake.testing.autoWatchOnDebug": false,
+    "cmake.testing.autoWatchOnRun": false,
+    "cmake.testing.autoWatchOnStop": false,
+    "cmake.testing.autoWatchOnClean": false,
+    "cmake.testing.autoWatchOnInstall": false,
+    "cmake.testing.autoWatchOnPackage": false,
+    "cmake.testing.autoWatchOnConfigureStart": false,
+    "cmake.testing.autoWatchOnConfigureEnd": false,
+    "cmake.testing.autoWatchOnBuildStart": false,
+    "cmake.testing.autoWatchOnBuildEnd": false,
+    "cmake.testing.autoWatchOnTestStart": false,
+    "cmake.testing.autoWatchOnTestEnd": false,
+    "cmake.testing.autoWatchOnDebugStart": false,
+    "cmake.testing.autoWatchOnDebugEnd": false,
+    "cmake.testing.autoWatchOnRunStart": false,
+    "cmake.testing.autoWatchOnRunEnd": false,
+    "cmake.testing.autoWatchOnStopStart": false,
+    "cmake.testing.autoWatchOnStopEnd": false,
+    "cmake.testing.autoWatchOnCleanStart": false,
+    "cmake.testing.autoWatchOnCleanEnd": false,
+    "cmake.testing.autoWatchOnInstallStart": false,
+    "cmake.testing.autoWatchOnInstallEnd": false,
+    "cmake.testing.autoWatchOnPackageStart": false,
+    "cmake.testing.autoWatchOnPackageEnd": false
 } 

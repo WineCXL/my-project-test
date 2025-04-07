@@ -176,21 +176,6 @@ add_custom_command(
     ${CMAKE_SOURCE_DIR}/libs/miracl/include/mirdef.h
 )
 
-# 添加VS Code配置目录到.gitignore
-file(APPEND ${CMAKE_SOURCE_DIR}/.gitignore "
-# CMake生成文件
-build/
-out/
-.vs/
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
-")
-
 # 提示信息
 message(STATUS "配置完成。您可以使用以下命令构建项目：")
 message(STATUS "  mkdir build && cd build")
