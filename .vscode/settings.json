@@ -24,17 +24,41 @@
     "git.autorefresh": false,                                // 不自动刷新Git状态
     "git.enabled": true,                                     // 启用Git功能
     "git.ignoreWindowsGit27Warning": true,                   // 忽略Git 2.7警告
+    "git.ignoreLimitWarning": true,                          // 忽略Git限制警告
+    "git.ignoreMissingGitWarning": false,                    // 不忽略Git缺失警告
+    "git.fetchOnPull": false,                                // 拉取时不自动获取
+    "git.untrackedChanges": "hidden",                        // 隐藏未跟踪的更改
     
     // ===== 文件排除 =====
     "files.exclude": {
         "**/build": false,                       // 不隐藏build文件夹
-        "**/.vs": true                           // 隐藏.vs文件夹
+        "**/.vs": true,                          // 隐藏.vs文件夹
+        "**/build/**/*.obj": true,               // 隐藏build目录下的obj文件
+        "**/build/**/*.pdb": true,               // 隐藏build目录下的pdb文件
+        "**/build/**/*.ilk": true,               // 隐藏build目录下的ilk文件
+        "**/build/**/*.exe": true,               // 隐藏build目录下的exe文件
+        "**/build/**/*.lib": true,               // 隐藏build目录下的lib文件
+        "**/build/CMakeFiles/**": true,          // 隐藏CMakeFiles目录
+        "**/build/CMakeCache.txt": true,         // 隐藏CMakeCache.txt文件
+        "**/build/**/*.cmake": true              // 隐藏cmake文件
     },
     
     // ===== 搜索排除 =====
     "search.exclude": {
         "**/build/**": true,                     // 搜索时排除build目录
-        "**/node_modules": true                  // 搜索时排除node_modules
+        "**/node_modules": true,                 // 搜索时排除node_modules
+        "**/CMakeFiles/**": true,                // 搜索时排除CMakeFiles
+        "**/bin/**": true,                       // 搜索时排除bin目录
+        "**/obj/**": true                        // 搜索时排除obj目录
+    },
+    
+    // ===== 文件监视排除 =====
+    "files.watcherExclude": {
+        "**/build/**": true,                     // 文件监视器排除build目录
+        "**/CMakeFiles/**": true,                // 文件监视器排除CMakeFiles
+        "**/node_modules/**": true,              // 文件监视器排除node_modules
+        "**/bin/**": true,                       // 文件监视器排除bin目录
+        "**/obj/**": true                        // 文件监视器排除obj目录
     },
 
     // ===== C/C++配置 =====
