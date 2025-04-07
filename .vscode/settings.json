@@ -1,40 +1,40 @@
 {
     // ===== CMake基本配置 =====
-    "cmake.configureOnOpen": false,           // 打开项目时不自动运行CMake配置
-    "cmake.buildBeforeRun": false,            // 运行前不自动构建
-    "cmake.automaticReconfigure": false,      // 不自动重新配置
-    "cmake.autoSelectActiveFolder": false,    // 不自动选择活动文件夹
-    "cmake.autoStartBuild": false,            // 不自动开始构建
-    "cmake.configureOnEdit": false,           // 编辑CMake文件时不自动配置
-    "cmake.configureOnStartup": false,        // 启动时不自动配置
-    "cmake.parallelJobs": 4,                  // 并行构建任务数
-    "cmake.buildDirectory": "${workspaceFolder}/build",  // 构建目录
-    "cmake.installPrefix": "${workspaceFolder}/install", // 安装目录
+    "cmake.configureOnOpen": false,              // 打开项目时不自动运行CMake配置
+    "cmake.buildBeforeRun": false,               // 运行前不自动构建
+    "cmake.automaticReconfigure": false,         // 不自动重新配置
+    "cmake.autoSelectActiveFolder": false,       // 不自动选择活动文件夹
+    "cmake.autoStartBuild": false,               // 不自动开始构建
+    "cmake.configureOnEdit": false,              // 编辑CMake文件时不自动配置
+    "cmake.configureOnStartup": false,           // 启动时不自动配置
+    "cmake.parallelJobs": 4,                     // 并行构建任务数
+    "cmake.buildDirectory": "${workspaceFolder}/build",    // 构建目录
+    "cmake.installPrefix": "${workspaceFolder}/install",   // 安装目录
 
     // ===== 终端配置 =====
-    "terminal.integrated.cwd": "${workspaceFolder}",    // 设置终端启动目录为工作区根目录
-    "terminal.integrated.automationShell.windows": "",  // 禁用自动化shell
+    "terminal.integrated.cwd": "${workspaceFolder}",       // 设置终端启动目录为工作区根目录
+    "terminal.integrated.automationShell.windows": "",     // 禁用自动化shell
     "terminal.integrated.enablePersistentSessions": false, // 禁用持久会话
     "terminal.integrated.persistentSessionReviveProcess": "never", // 不自动恢复终端会话
-    "terminal.integrated.defaultProfile.windows": null, // 不设置默认终端配置文件
+    "terminal.integrated.defaultProfile.windows": null,    // 不设置默认终端配置文件
 
     // ===== Git配置 =====
-    "git.ignoredRepositories": ["${workspaceFolder}/build"],  // 让Git忽略build目录
-    "git.scanRepositories": ["${workspaceFolder}"],           // 只扫描工作区主目录
-    "git.autorefresh": false,                                 // 不自动刷新Git状态
-    "git.enabled": true,                                      // 启用Git功能
-    "git.ignoreWindowsGit27Warning": true,                    // 忽略Git 2.7警告
+    "git.ignoredRepositories": ["${workspaceFolder}/build"], // 让Git忽略build目录
+    "git.scanRepositories": ["${workspaceFolder}"],          // 只扫描工作区主目录
+    "git.autorefresh": false,                                // 不自动刷新Git状态
+    "git.enabled": true,                                     // 启用Git功能
+    "git.ignoreWindowsGit27Warning": true,                   // 忽略Git 2.7警告
     
     // ===== 文件排除 =====
     "files.exclude": {
-        "**/build": false,                    // 不隐藏build文件夹
-        "**/.vs": true                        // 隐藏.vs文件夹
+        "**/build": false,                       // 不隐藏build文件夹
+        "**/.vs": true                           // 隐藏.vs文件夹
     },
     
     // ===== 搜索排除 =====
     "search.exclude": {
-        "**/build/**": true,                  // 搜索时排除build目录
-        "**/node_modules": true               // 搜索时排除node_modules
+        "**/build/**": true,                     // 搜索时排除build目录
+        "**/node_modules": true                  // 搜索时排除node_modules
     },
 
     // ===== C/C++配置 =====
@@ -42,9 +42,9 @@
 
     // ===== 调试配置 =====
     "cmake.debugConfig": {
-        "stopAtEntry": true,                  // 在程序入口点停止
-        "MIMode": "gdb",                      // 使用GDB作为调试器
-        "miDebuggerPath": "gdb",              // GDB路径
+        "stopAtEntry": true,                     // 在程序入口点停止
+        "MIMode": "gdb",                         // 使用GDB作为调试器
+        "miDebuggerPath": "gdb",                 // GDB路径
         "setupCommands": [
             {
                 "description": "为 gdb 启用整齐打印",
@@ -57,7 +57,7 @@
     // ===== 构建类型配置 =====
     "cmake.defaultVariants": {
         "buildType": {
-            "default": "debug",               // 默认使用Debug构建
+            "default": "debug",                  // 默认使用Debug构建
             "description": "The build type.",
             "choices": {
                 "debug": {
@@ -85,10 +85,10 @@
     },
 
     // ===== 测试相关配置（全部禁用） =====
-    "cmake.autoRunTests": false,              // 不自动运行测试
+    "cmake.autoRunTests": false,                 // 不自动运行测试
     "cmake.testing.enableAutoDiscoverOnOpen": false, // 打开时不自动发现测试
-    "cmake.testing.autoStartTests": false,    // 不自动开始测试
-    "cmake.testing.autoStopTests": false,     // 不自动停止测试
+    "cmake.testing.autoStartTests": false,       // 不自动开始测试
+    "cmake.testing.autoStopTests": false,        // 不自动停止测试
     
     // 下面是一系列与自动监视相关的配置，全部禁用
     "cmake.testing.autoWatchOnStartup": false,
