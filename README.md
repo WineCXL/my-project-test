@@ -1,74 +1,83 @@
 # MIRACLTest
 
-这是一个使用 MIRACL 密码学库的测试项目。
+基于MIRACL库的密码学方案实现
 
 ## 项目结构
 
 ```
 MIRACLTest/
-├── libs/                # 第三方库
-│   └── miracl/         # MIRACL 密码学库
-│       ├── include/    # 头文件
-│       └── lib/        # 库文件
-├── src/                # 源代码
-│   ├── miracl_example.cpp  # MIRACL 库使用示例
-│   └── scheme1.cpp     # 基于 MIRACL 的安全关键词搜索方案
-├── CMakeLists.txt      # CMake 构建配置
-└── README.md           # 项目说明文档
+├── libs/
+│   └── miracl/           # MIRACL库文件
+│       ├── include/      # 头文件
+│       ├── source/       # 源文件
+│       └── lib/          # 预编译库
+├── src/
+│   └── scheme1.cpp      # 主程序
+└── CMakeLists.txt       # CMake配置文件
 ```
 
-## 构建说明
+## 依赖项
 
-### 前提条件
+- CMake 3.10或更高版本
+- Visual Studio 2022（Windows平台）
+- MIRACL库（已包含在项目中）
 
-- CMake 3.10 或更高版本
-- C++11 兼容的编译器
-- Windows 系统（已测试 Windows 10）
+## 编译说明
 
-### 构建步骤
+1. 确保已安装Visual Studio 2022和CMake
 
-1. 创建构建目录并生成构建文件：
+2. 在项目根目录下执行以下命令：
+   ```bash
+   cmake -B build -S . -A Win32
+   cmake --build build --config Debug
+   ```
 
+3. 编译完成后，可执行文件位于：
+   ```
+   build/bin/Debug/scheme1.exe
+   ```
+
+## 运行说明
+
+直接运行生成的可执行文件：
 ```bash
-cmake -B build -S .
+.\build\bin\Debug\scheme1.exe
 ```
 
-2. 构建项目：
+## 功能说明
 
-```bash
-cmake --build build --config Debug
-```
+本程序实现了基于配对密码学的方案，包括：
 
-3. 运行示例程序：
+1. 系统初始化
+   - 生成系统主密钥和公钥
+   - 初始化配对友好曲线
 
-```bash
-.\build\bin\Debug\miracl_example.exe
-```
+2. 边缘节点注册
+   - 为每个节点生成唯一ID
+   - 分配对应的私钥
 
-## 项目说明
+3. 群组生成
+   - 生成群组公钥
+   - 计算群组参数
 
-### miracl_example.cpp
+4. 消息封装
+   - 加密关键词
+   - 生成密文
 
-这是一个简单的 MIRACL 库使用示例，展示了基本的大整数运算功能：
-- 大整数初始化
-- 大整数赋值
-- 大整数加法
-- 大整数减法
-- 大整数乘法
-- 大整数除法
+5. 授权测试
+   - 生成陷门
+   - 验证授权
 
-### scheme1.cpp
-
-这是一个基于 MIRACL 库实现的安全关键词搜索方案，包含以下主要组件：
-1. 系统设置 (Setup)
-2. 边缘节点注册 (Registration)
-3. 组密钥生成 (Group Generation)
-4. 消息/关键词封装 (Message Encapsulation)
-5. 授权测试 (Test Authorization)
-6. 资源分配 (Resource Allocation)
+6. 资源分配
+   - 验证关键词匹配
+   - 输出结果
 
 ## 注意事项
 
-- 项目使用 UTF-8 编码
-- 在 Windows 系统上运行时，可能需要设置控制台代码页为 UTF-8
-- 确保 MIRACL 库的头文件和库文件位于正确的位置
+- 本项目使用32位编译，确保使用Win32平台
+- 需要Visual Studio 2022的C++开发工具
+- 确保系统有足够的内存运行密码学运算
+
+## 许可证
+
+本项目基于MIRACL库开发，遵循相应的许可证要求。

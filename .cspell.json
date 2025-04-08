@@ -2,12 +2,14 @@
     "version": "0.2",
     "language": "en",
     "words": [
-        "Ppub",
-        "irand",
-        "miracl",
+        "MSVC",
+        "MR_PAIRING_SS2",
         "PFC",
         "G1",
         "GT",
+        "Ppub",
+        "miracl",
+        "irand",
         "ecn2",
         "zzn2",
         "zzn4",
@@ -15,8 +17,7 @@
         "zzn24",
         "gf2m",
         "gf2m4x",
-        "ss2",
-        "MR_PAIRING_SS2"
+        "ss2"
     ],
     "ignorePaths": [
         "node_modules/**",
