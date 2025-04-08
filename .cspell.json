@@ -2,17 +2,30 @@
     "version": "0.2",
     "language": "en",
     "words": [
+        "Ppub",
+        "irand",
         "miracl",
-        "MIRACL",
-        "mirsys",
-        "mirvar",
-        "cotnum",
-        "mirkill"
+        "PFC",
+        "G1",
+        "GT",
+        "ecn2",
+        "zzn2",
+        "zzn4",
+        "zzn12",
+        "zzn24",
+        "gf2m",
+        "gf2m4x",
+        "ss2",
+        "MR_PAIRING_SS2"
     ],
     "ignorePaths": [
-        "**/node_modules/**",
-        "**/vscode-extension/**",
-        "**/.git/**",
-        "**/build/**"
+        "node_modules/**",
+        "build/**",
+        "dist/**",
+        "*.d.ts",
+        "*.js",
+        "*.jsx",
+        "*.ts",
+        "*.tsx"
     ]
 } 

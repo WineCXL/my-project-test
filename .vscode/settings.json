@@ -31,12 +31,10 @@
     
     // ===== 文件排除 =====
     "files.exclude": {
-        "**/build": false,                       // 不隐藏build文件夹
         "**/.vs": true,                          // 隐藏.vs文件夹
         "**/build/**/*.obj": true,               // 隐藏build目录下的obj文件
         "**/build/**/*.pdb": true,               // 隐藏build目录下的pdb文件
         "**/build/**/*.ilk": true,               // 隐藏build目录下的ilk文件
-        "**/build/**/*.exe": true,               // 隐藏build目录下的exe文件
         "**/build/**/*.lib": true,               // 隐藏build目录下的lib文件
         "**/build/CMakeFiles/**": true,          // 隐藏CMakeFiles目录
         "**/build/CMakeCache.txt": true,         // 隐藏CMakeCache.txt文件
