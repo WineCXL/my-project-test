@@ -9,13 +9,15 @@ set(CMAKE_CXX_STANDARD 11)
 # 强制要求支持指定的C++标准
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 设置输出目录
-# 可执行文件输出到build/bin目录
+# 设置输出目录 - 可执行文件输出到build/bin目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-# 动态库输出到build/lib目录
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-# 静态库输出到build/lib目录
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+# 添加 MIRACL 库 - 导入预编译的静态库
+add_library(miracl_core STATIC IMPORTED)
+# 设置导入库的路径
+set_target_properties(miracl_core PROPERTIES
+    IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/libs/miracl/lib/miracl.lib
+)
 
 # 添加 MIRACL 源文件 - 这些是需要编译的MIRACL库核心组件
 set(MIRACL_SOURCES
@@ -24,13 +26,6 @@ set(MIRACL_SOURCES
     libs/miracl/source/gf2m.cpp     # 有限域GF(2^m)运算
     libs/miracl/source/gf2m4x.cpp   # GF(2^m)扩展运算
     libs/miracl/source/ss2_pair.cpp # SS2配对运算
-)
-
-# 添加 MIRACL 库 - 导入预编译的静态库
-add_library(miracl_core STATIC IMPORTED)
-# 设置导入库的路径
-set_target_properties(miracl_core PROPERTIES
-    IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/libs/miracl/lib/miracl.lib
 )
 
 # 添加 MIRACL 扩展库 - 使用上面定义的源文件创建静态库
