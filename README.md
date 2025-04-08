@@ -4,16 +4,23 @@
 
 ## 项目结构
 
-```
+```text
 MIRACLTest/
+├── .vscode/
+│   └── settings.json    # VS Code编辑器配置
 ├── libs/
-│   └── miracl/           # MIRACL库文件
-│       ├── include/      # 头文件
-│       ├── source/       # 源文件
-│       └── lib/          # 预编译库
+│   └── miracl/          # MIRACL库文件
+│       ├── include/     # 头文件
+│       ├── source/      # 源文件
+│       └── lib/         # 预编译库
 ├── src/
 │   └── scheme1.cpp      # 主程序
-└── CMakeLists.txt       # CMake配置文件
+├── .cspell.json         # 拼写检查配置
+├── .gitignore           # Git忽略规则
+├── .gitmodules          # Git子模块配置
+├── CMakeLists.txt       # CMake配置文件
+├── helloworld.md        # Markdown教程
+└── README.md            # 项目说明文档
 ```
 
 ## 依赖项
@@ -27,19 +34,22 @@ MIRACLTest/
 1. 确保已安装Visual Studio 2022和CMake
 
 2. 在项目根目录下执行以下命令：
+
    ```bash
    cmake -B build -S . -A Win32
    cmake --build build --config Debug
    ```
 
 3. 编译完成后，可执行文件位于：
-   ```
+
+   ```text
    build/bin/Debug/scheme1.exe
    ```
 
 ## 运行说明
 
 直接运行生成的可执行文件：
+
 ```bash
 .\build\bin\Debug\scheme1.exe
 ```
