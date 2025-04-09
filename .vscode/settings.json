@@ -62,6 +62,18 @@
     // ===== C/C++配置 =====
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools", // 使用CMake工具作为配置提供者
 
+    // ===== 编辑器配置 =====
+    "editor.tabSize": 4,                         // 设置默认缩进为4个空格
+    "editor.insertSpaces": true,                 // 使用空格而不是制表符
+    "editor.detectIndentation": false,           // 不自动检测缩进
+    "[javascript]": {
+        "editor.tabSize": 4,                     // JavaScript文件使用4空格缩进
+        "editor.detectIndentation": false        // 不自动检测JavaScript文件的缩进
+    },
+    "[json]": {
+        "editor.tabSize": 2                      // JSON文件使用2空格缩进
+    },
+
     // ===== 调试配置 =====
     "cmake.debugConfig": {
         "stopAtEntry": true,                     // 在程序入口点停止
