@@ -1,252 +1,339 @@
+/**
+ * 文档与节点组匹配控制器
+ * 将文档分配给空闲的节点组执行
+ */
+
 const db = require("../models");
-const Resource = db.resources;
-const Group = db.groups;
+const Document = db.Document;
+const Group = db.Group;
+const NodeGroup = db.NodeGroup;
 
-// 创建新资源
-exports.create = (req, res) => {
-    // 验证请求
-    if (!req.body.resourceId || !req.body.resourceName) {
-        res.status(400).send({
-            message: "资源ID和名称不能为空！",
-        });
-        return;
-    }
+/**
+ * 获取所有待处理的文档
+ * @param {Object} req - HTTP请求对象
+ * @param {Object} res - HTTP响应对象
+ */
+exports.findPendingDocuments = async (req, res) => {
+  try {
+    // 查询所有待处理的文档
+    const pendingDocs = await Document.findAll({
+      where: {
+        executionStatus: 'pending',
+        assignedGroupId: null
+      }
+    });
 
-    // 创建资源对象
-    const resource = {
-        resourceId: req.body.resourceId,
-        resourceName: req.body.resourceName,
-        resourceType: req.body.resourceType,
-        amount: req.body.amount || 0,
-        keywords: req.body.keywords || [],
-        encryptedData: req.body.encryptedData,
-        status: req.body.status || "available",
-        description: req.body.description,
-        groupId: req.body.groupId,
-    };
-
-    // 保存到数据库
-    Resource.create(resource)
-        .then((data) => {
-            res.send(data);
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "创建资源时发生错误。",
-            });
-        });
+    return res.status(200).json({
+      success: true,
+      count: pendingDocs.length,
+      data: pendingDocs
+    });
+  } catch (error) {
+    console.error('获取待处理文档失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '获取待处理文档失败',
+      error: error.message
+    });
+  }
 };
 
-// 获取所有资源
-exports.findAll = (req, res) => {
-    const status = req.query.status;
-    const groupId = req.query.groupId;
+/**
+ * 获取所有正在执行的文档
+ * @param {Object} req - HTTP请求对象
+ * @param {Object} res - HTTP响应对象
+ */
+exports.findExecutingDocuments = async (req, res) => {
+  try {
+    // 查询所有执行中的文档
+    const executingDocs = await Document.findAll({
+      where: {
+        executionStatus: 'executing'
+      },
+      include: [
+        {
+          model: Group,
+          attributes: ['id', 'groupId', 'groupName', 'status']
+        }
+      ]
+    });
 
-    let condition = {};
-    if (status) condition.status = status;
-    if (groupId) condition.groupId = groupId;
-
-    Resource.findAll({
-        where: condition,
-        include: [
-            {
-                model: Group,
-                as: "group",
-                attributes: ["id", "groupId", "groupName"],
-            },
-        ],
-    })
-        .then((data) => {
-            res.send(data);
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "获取资源列表时发生错误。",
-            });
-        });
+    return res.status(200).json({
+      success: true,
+      count: executingDocs.length,
+      data: executingDocs
+    });
+  } catch (error) {
+    console.error('获取执行中文档失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '获取执行中文档失败',
+      error: error.message
+    });
+  }
 };
 
-// 获取单个资源
-exports.findOne = (req, res) => {
-    const id = req.params.id;
-
-    Resource.findByPk(id, {
-        include: [
-            {
-                model: Group,
-                as: "group",
-                attributes: ["id", "groupId", "groupName"],
-            },
-        ],
-    })
-        .then((data) => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `未找到ID为${id}的资源。`,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `获取ID为${id}的资源时发生错误。`,
-            });
-        });
-};
-
-// 按资源ID查找
-exports.findByResourceId = (req, res) => {
-    const resourceId = req.params.resourceId;
-
-    Resource.findOne({
-        where: { resourceId: resourceId },
-        include: [
-            {
-                model: Group,
-                as: "group",
-                attributes: ["id", "groupId", "groupName"],
-            },
-        ],
-    })
-        .then((data) => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `未找到资源ID为${resourceId}的资源。`,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `获取资源ID为${resourceId}的资源时发生错误。`,
-            });
-        });
-};
-
-// 按关键词搜索资源
-exports.searchByKeyword = (req, res) => {
-    const keyword = req.params.keyword;
-
-    Resource.findAll({
-        where: {},
-        include: [
-            {
-                model: Group,
-                as: "group",
-                attributes: ["id", "groupId", "groupName"],
-            },
-        ],
-    })
-        .then((resources) => {
-            // 过滤包含关键词的资源
-            const filteredResources = resources.filter((resource) => {
-                try {
-                    const keywords = resource.keywords;
-                    return keywords.includes(keyword);
-                } catch (error) {
-                    return false;
-                }
-            });
-
-            res.send(filteredResources);
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "搜索资源时发生错误。",
-            });
-        });
-};
-
-// 更新资源
-exports.update = (req, res) => {
-    const id = req.params.id;
-
-    Resource.update(req.body, {
-        where: { id: id },
-    })
-        .then((num) => {
-            if (num == 1) {
-                res.send({
-                    message: "资源更新成功。",
-                });
-            } else {
-                res.send({
-                    message: `无法更新ID为${id}的资源。可能资源不存在或请求体为空！`,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `更新ID为${id}的资源时发生错误。`,
-            });
-        });
-};
-
-// 分配资源到群组
-exports.allocateToGroup = (req, res) => {
-    const resourceId = req.params.id;
+/**
+ * 将文档分配给节点组
+ * @param {Object} req - HTTP请求对象
+ * @param {Object} res - HTTP响应对象
+ */
+exports.allocateDocumentToGroup = async (req, res) => {
+  try {
+    const documentId = req.params.documentId;
     const groupId = req.params.groupId;
 
-    Resource.findByPk(resourceId)
-        .then((resource) => {
-            if (!resource) {
-                res.status(404).send({
-                    message: `未找到ID为${resourceId}的资源。`,
-                });
-                return;
-            }
+    // 查找文档
+    const document = await Document.findByPk(documentId);
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        message: `未找到ID为${documentId}的文档。`
+      });
+    }
 
-            Group.findByPk(groupId)
-                .then((group) => {
-                    if (!group) {
-                        res.status(404).send({
-                            message: `未找到ID为${groupId}的群组。`,
-                        });
-                        return;
-                    }
+    // 检查文档是否已分配
+    if (document.assignedGroupId) {
+      return res.status(400).json({
+        success: false,
+        message: `文档#${documentId}已分配给群组#${document.assignedGroupId}。`
+      });
+    }
 
-                    resource.setGroup(group);
-                    resource.update({ status: "allocated" });
-                    res.send({
-                        message: `成功将资源分配给群组。`,
-                    });
-                })
-                .catch((err) => {
-                    res.status(500).send({
-                        message: err.message || "分配资源时发生错误。",
-                    });
-                });
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "分配资源时发生错误。",
-            });
-        });
+    // 查找群组
+    const group = await Group.findByPk(groupId);
+    if (!group) {
+      return res.status(404).json({
+        success: false,
+        message: `未找到ID为${groupId}的群组。`
+      });
+    }
+
+    // 检查群组是否有足够的节点（需要4个节点）
+    const nodeGroups = await NodeGroup.findAll({
+      where: { groupId: group.id }
+    });
+
+    if (nodeGroups.length !== 4) {
+      return res.status(400).json({
+        success: false,
+        message: `群组#${groupId}没有正确的节点数量（需要4个节点）。`
+      });
+    }
+
+    // 检查群组状态是否为空闲
+    if (group.status !== 'idle') {
+      return res.status(400).json({
+        success: false,
+        message: `群组#${groupId}状态不是空闲，无法分配任务。`
+      });
+    }
+
+    // 将文档与群组匹配并更新状态
+    // 更新文档状态
+    await document.update({
+      executionStatus: "executing",
+      assignedGroupId: group.id
+    });
+
+    // 更新群组状态为忙碌
+    await group.update({ status: 'busy' });
+
+    // 返回成功响应
+    return res.status(200).json({
+      success: true,
+      message: `成功将文档分配给群组#${groupId}。`,
+      data: {
+        documentId: document.id,
+        documentTitle: document.title,
+        groupId: group.id,
+        groupName: group.groupName
+      }
+    });
+  } catch (error) {
+    console.error('分配文档到群组失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '分配文档到群组失败',
+      error: error.message
+    });
+  }
 };
 
-// 删除资源
-exports.delete = (req, res) => {
-    const id = req.params.id;
+/**
+ * 手动完成文档处理
+ * @param {Object} req - HTTP请求对象
+ * @param {Object} res - HTTP响应对象
+ */
+exports.completeDocument = async (req, res) => {
+  try {
+    const documentId = req.params.documentId;
 
-    Resource.destroy({
-        where: { id: id },
-    })
-        .then((num) => {
-            if (num == 1) {
-                res.send({
-                    message: "资源删除成功！",
-                });
-            } else {
-                res.send({
-                    message: `无法删除ID为${id}的资源。可能资源不存在！`,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `删除ID为${id}的资源时发生错误。`,
-            });
-        });
+    // 查找文档
+    const document = await Document.findByPk(documentId);
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        message: `未找到ID为${documentId}的文档。`
+      });
+    }
+
+    // 检查文档是否正在执行
+    if (document.executionStatus !== 'executing') {
+      return res.status(400).json({
+        success: false,
+        message: `文档#${documentId}不在执行状态，无法完成。`
+      });
+    }
+
+    // 找到分配的群组
+    const groupId = document.assignedGroupId;
+    if (!groupId) {
+      return res.status(400).json({
+        success: false,
+        message: `文档#${documentId}未分配给任何群组。`
+      });
+    }
+
+    const group = await Group.findByPk(groupId);
+    if (!group) {
+      return res.status(404).json({
+        success: false,
+        message: `未找到文档分配的群组#${groupId}。`
+      });
+    }
+
+    // 更新文档状态为已完成
+    await document.update({
+      executionStatus: 'completed'
+    });
+
+    // 释放群组资源
+    await group.update({
+      status: 'idle'
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `文档#${documentId}已完成处理，群组#${groupId}已释放。`,
+      data: {
+        documentId: document.id,
+        documentTitle: document.title,
+        executionStatus: document.executionStatus,
+        groupId: group.id,
+        groupName: group.groupName,
+        groupStatus: group.status
+      }
+    });
+  } catch (error) {
+    console.error('完成文档处理失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '完成文档处理失败',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * 自动匹配文档和空闲群组
+ * @param {Object} req - HTTP请求对象
+ * @param {Object} res - HTTP响应对象
+ */
+exports.autoAllocate = async (req, res) => {
+  try {
+    // 获取所有待处理的文档
+    const pendingDocs = await Document.findAll({
+      where: {
+        executionStatus: 'pending',
+        assignedGroupId: null
+      },
+      limit: 10 // 限制每次处理的数量
+    });
+
+    if (pendingDocs.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: '没有待处理的文档。'
+      });
+    }
+
+    // 获取所有空闲的群组
+    const idleGroups = await Group.findAll({
+      where: {
+        status: 'idle'
+      }
+    });
+
+    if (idleGroups.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: '没有空闲的群组可用于分配。'
+      });
+    }
+
+    // 验证群组是否有足够的节点（需要4个节点）
+    const validGroups = [];
+    for (const group of idleGroups) {
+      const nodeGroups = await NodeGroup.findAll({
+        where: { groupId: group.id }
+      });
+
+      if (nodeGroups.length === 4) {
+        validGroups.push(group);
+      }
+    }
+
+    if (validGroups.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: '没有有效的群组（需要4个节点）可用于分配。'
+      });
+    }
+
+    // 分配文档到群组
+    const allocations = [];
+    let groupIndex = 0;
+
+    for (const doc of pendingDocs) {
+      if (groupIndex >= validGroups.length) {
+        break; // 没有更多可用的群组
+      }
+
+      const group = validGroups[groupIndex];
+
+      // 更新文档状态
+      await doc.update({
+        executionStatus: 'executing',
+        assignedGroupId: group.id
+      });
+
+      // 更新群组状态
+      await group.update({
+        status: 'busy'
+      });
+
+      allocations.push({
+        documentId: doc.id,
+        documentTitle: doc.title,
+        groupId: group.id,
+        groupName: group.groupName
+      });
+
+      groupIndex++;
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `成功分配了 ${allocations.length} 个文档。`,
+      data: allocations
+    });
+  } catch (error) {
+    console.error('自动分配文档失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '自动分配文档失败',
+      error: error.message
+    });
+  }
 };

@@ -2,29 +2,20 @@ module.exports = app => {
     const resources = require("../controllers/resource.controller.js");
     const router = require("express").Router();
 
-    // 创建新资源
-    router.post("/", resources.create);
+    // 获取所有待处理的文档
+    router.get("/pending", resources.findPendingDocuments);
 
-    // 获取所有资源
-    router.get("/", resources.findAll);
+    // 获取所有正在执行的文档
+    router.get("/executing", resources.findExecutingDocuments);
 
-    // 获取单个资源
-    router.get("/:id", resources.findOne);
+    // 将文档分配给节点组
+    router.post("/document/:documentId/allocate/:groupId", resources.allocateDocumentToGroup);
 
-    // 按资源ID查找资源
-    router.get("/resourceId/:resourceId", resources.findByResourceId);
+    // 手动完成文档处理
+    router.post("/document/:documentId/complete", resources.completeDocument);
 
-    // 按关键词搜索资源
-    router.get("/search/:keyword", resources.searchByKeyword);
-
-    // 更新资源
-    router.put("/:id", resources.update);
-
-    // 分配资源到群组
-    router.post("/:id/allocate/:groupId", resources.allocateToGroup);
-
-    // 删除资源
-    router.delete("/:id", resources.delete);
+    // 自动匹配文档和空闲群组
+    router.post("/auto-allocate", resources.autoAllocate);
 
     app.use("/api/resources", router);
-}; 
+};

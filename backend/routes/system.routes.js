@@ -8,6 +8,9 @@ module.exports = app => {
     // 获取所有系统参数
     router.get("/", systems.findAll);
 
+    // 获取系统参数 (用于前端获取系统参数的API)
+    router.get("/params", systems.findAll);
+
     // 获取单个系统参数
     router.get("/:id", systems.findOne);
 
@@ -21,4 +24,4 @@ module.exports = app => {
     router.delete("/:id", systems.delete);
 
     app.use("/api/system", router);
-}; 
+};

@@ -1,3 +1,25 @@
+/**
+ * 系统控制器
+ * 负责系统参数管理、系统初始化等功能
+ * 内部实现调用core/setup.controller.js
+ */
+
+// 导入核心算法控制器
+const setupController = require('./core/setup.controller');
+
+// 初始化系统参数
+exports.initializeSystem = setupController.initialize;
+
+// 获取系统参数
+exports.getSystemParams = setupController.getPublicParams;
+
+// 重置系统（仅用于测试）
+exports.resetSystem = setupController.resetSystem;
+
+// 为保持向后兼容性，保留旧的API命名
+exports.initialize = setupController.initialize;
+exports.getParams = setupController.getPublicParams;
+
 const db = require("../models");
 const SystemParam = db.systemParams;
 
@@ -134,4 +156,4 @@ exports.delete = (req, res) => {
                 message: `删除ID为${id}的系统参数时发生错误。`
             });
         });
-}; 
+};

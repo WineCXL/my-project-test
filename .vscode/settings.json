@@ -28,7 +28,7 @@
     "git.ignoreMissingGitWarning": false,                    // 不忽略Git缺失警告
     "git.fetchOnPull": false,                                // 拉取时不自动获取
     "git.untrackedChanges": "hidden",                        // 隐藏未跟踪的更改
-    
+
     // ===== 文件排除 =====
     "files.exclude": {
         "**/.vs": true,                          // 隐藏.vs文件夹
@@ -40,7 +40,7 @@
         "**/build/CMakeCache.txt": true,         // 隐藏CMakeCache.txt文件
         "**/build/**/*.cmake": true              // 隐藏cmake文件
     },
-    
+
     // ===== 搜索排除 =====
     "search.exclude": {
         "**/build/**": true,                     // 搜索时排除build目录
@@ -49,7 +49,7 @@
         "**/bin/**": true,                       // 搜索时排除bin目录
         "**/obj/**": true                        // 搜索时排除obj目录
     },
-    
+
     // ===== 文件监视排除 =====
     "files.watcherExclude": {
         "**/build/**": true,                     // 文件监视器排除build目录
@@ -123,7 +123,7 @@
     "cmake.testing.enableAutoDiscoverOnOpen": false, // 打开时不自动发现测试
     "cmake.testing.autoStartTests": false,       // 不自动开始测试
     "cmake.testing.autoStopTests": false,        // 不自动停止测试
-    
+
     // 下面是一系列与自动监视相关的配置，全部禁用
     "cmake.testing.autoWatchOnStartup": false,
     "cmake.testing.autoWatchOnConfigure": false,
@@ -152,5 +152,81 @@
     "cmake.testing.autoWatchOnInstallStart": false,
     "cmake.testing.autoWatchOnInstallEnd": false,
     "cmake.testing.autoWatchOnPackageStart": false,
-    "cmake.testing.autoWatchOnPackageEnd": false
-} 
+    "cmake.testing.autoWatchOnPackageEnd": false,
+    "files.associations": {
+      "*.sqlbook": "sql",
+      "*.ndjson": "jsonl",
+      "*.dbclient-js": "javascript",
+      "*.html": "html",
+      "*.json": "json",
+      "algorithm": "cpp",
+      "array": "cpp",
+      "atomic": "cpp",
+      "bit": "cpp",
+      "cctype": "cpp",
+      "charconv": "cpp",
+      "clocale": "cpp",
+      "cmath": "cpp",
+      "compare": "cpp",
+      "concepts": "cpp",
+      "cstddef": "cpp",
+      "cstdint": "cpp",
+      "cstdio": "cpp",
+      "cstdlib": "cpp",
+      "cstring": "cpp",
+      "ctime": "cpp",
+      "cwchar": "cpp",
+      "cwctype": "cpp",
+      "deque": "cpp",
+      "exception": "cpp",
+      "format": "cpp",
+      "fstream": "cpp",
+      "functional": "cpp",
+      "initializer_list": "cpp",
+      "iomanip": "cpp",
+      "ios": "cpp",
+      "iosfwd": "cpp",
+      "iostream": "cpp",
+      "istream": "cpp",
+      "iterator": "cpp",
+      "limits": "cpp",
+      "list": "cpp",
+      "locale": "cpp",
+      "map": "cpp",
+      "memory": "cpp",
+      "new": "cpp",
+      "numeric": "cpp",
+      "optional": "cpp",
+      "ostream": "cpp",
+      "queue": "cpp",
+      "random": "cpp",
+      "sstream": "cpp",
+      "stdexcept": "cpp",
+      "streambuf": "cpp",
+      "string": "cpp",
+      "system_error": "cpp",
+      "tuple": "cpp",
+      "type_traits": "cpp",
+      "typeinfo": "cpp",
+      "unordered_map": "cpp",
+      "utility": "cpp",
+      "vector": "cpp",
+      "xfacet": "cpp",
+      "xhash": "cpp",
+      "xiosbase": "cpp",
+      "xlocale": "cpp",
+      "xlocbuf": "cpp",
+      "xlocinfo": "cpp",
+      "xlocmes": "cpp",
+      "xlocmon": "cpp",
+      "xlocnum": "cpp",
+      "xloctime": "cpp",
+      "xmemory": "cpp",
+      "xstring": "cpp",
+      "xtr1common": "cpp",
+      "xtree": "cpp",
+      "xutility": "cpp",
+      "*.tcc": "cpp",
+      "string_view": "cpp"
+    }
+}

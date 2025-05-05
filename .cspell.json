@@ -1,6 +1,6 @@
 {
     "version": "0.2",
-    "language": "en",
+    "language": "en,zh-CN",
     "words": [
         "MSVC",
         "MR_PAIRING_SS2",
@@ -17,7 +17,16 @@
         "zzn24",
         "gf2m",
         "gf2m4x",
-        "ss2"
+        "ss2",
+        "gypfile",
+        "cflags",
+        "NAPI",
+        "msvs",
+        "VCCL",
+        "bindings",
+        "jsonwebtoken",
+        "bcryptjs",
+        "napi"
     ],
     "ignorePaths": [
         "node_modules/**",
@@ -27,6 +36,8 @@
         "*.js",
         "*.jsx",
         "*.ts",
-        "*.tsx"
+        "*.tsx",
+        "libs/miracl/**",
+        "backend/node_modules/**"
     ]
 } 

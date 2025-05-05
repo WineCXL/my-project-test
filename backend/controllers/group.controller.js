@@ -1,298 +1,135 @@
-const db = require("../models");
-const Group = db.groups;
-const Node = db.nodes;
+/**
+ * 群组控制器
+ * 负责群组管理等功能
+ * 内部实现调用core/group.controller.js
+ */
+
+// 导入核心算法控制器
+const groupCoreController = require('./core/group.controller');
 
 // 创建新群组
-exports.create = (req, res) => {
-    // 验证请求
-    if (!req.body.groupId || !req.body.groupName) {
-        res.status(400).send({
-            message: "群组ID和名称不能为空！",
-        });
-        return;
-    }
-
-    // 创建群组对象
-    const group = {
-        groupId: req.body.groupId,
-        groupName: req.body.groupName,
-        status: req.body.status || "active",
-        groupPublicKey: req.body.groupPublicKey,
-        groupKey: req.body.groupKey,
-        description: req.body.description,
-    };
-
-    // 保存到数据库
-    Group.create(group)
-        .then((data) => {
-            // 如果传入了节点数组，则建立关联
-            if (req.body.nodeIds && req.body.nodeIds.length > 0) {
-                Node.findAll({
-                    where: {
-                        id: req.body.nodeIds,
-                    },
-                })
-                    .then((nodes) => {
-                        data.setNodes(nodes);
-                        res.send(data);
-                    })
-                    .catch((err) => {
-                        res.status(500).send({
-                            message: err.message || "关联节点时发生错误。",
-                        });
-                    });
-            } else {
-                res.send(data);
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "创建群组时发生错误。",
-            });
-        });
-};
+exports.create = groupCoreController.createGroup;
 
 // 获取所有群组
-exports.findAll = (req, res) => {
-    const status = req.query.status;
-
-    let condition = {};
-    if (status) condition.status = status;
-
-    Group.findAll({
-        where: condition,
-        include: [
-            {
-                model: Node,
-                as: "nodes",
-                attributes: ["id", "nodeId", "nodeType", "status"],
-                through: { attributes: [] }, // 不包含中间表字段
-            },
-        ],
-    })
-        .then((data) => {
-            res.send(data);
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "获取群组列表时发生错误。",
-            });
-        });
-};
+exports.findAll = groupCoreController.getAllGroups;
 
 // 获取单个群组
 exports.findOne = (req, res) => {
-    const id = req.params.id;
-
-    Group.findByPk(id, {
-        include: [
-            {
-                model: Node,
-                as: "nodes",
-                attributes: ["id", "nodeId", "nodeType", "status"],
-                through: { attributes: [] },
-            },
-        ],
-    })
-        .then((data) => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `未找到ID为${id}的群组。`,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `获取ID为${id}的群组时发生错误。`,
-            });
-        });
+    // 将req.params.id转换为适合groupCoreController.getGroupById的格式
+    req.params.id = req.params.id;
+    return groupCoreController.getGroupById(req, res);
 };
 
 // 按群组ID查找
 exports.findByGroupId = (req, res) => {
-    const groupId = req.params.groupId;
-
-    Group.findOne({
-        where: { groupId: groupId },
-        include: [
-            {
-                model: Node,
-                as: "nodes",
-                attributes: ["id", "nodeId", "nodeType", "status"],
-                through: { attributes: [] },
-            },
-        ],
-    })
-        .then((data) => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `未找到群组ID为${groupId}的群组。`,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `获取群组ID为${groupId}的群组时发生错误。`,
-            });
-        });
+    // 将req.params.groupId设置为req.params.id以便调用groupCoreController.getGroupById
+    req.params.id = req.params.groupId;
+    return groupCoreController.getGroupById(req, res);
 };
 
 // 更新群组
 exports.update = (req, res) => {
-    const id = req.params.id;
+    // 提取节点IDs
+    const nodeIds = req.body.nodeIds;
 
-    Group.update(req.body, {
-        where: { id: id },
-    })
-        .then((num) => {
-            if (num == 1) {
-                // 如果传入了节点数组，则更新关联
-                if (req.body.nodeIds && req.body.nodeIds.length > 0) {
-                    Group.findByPk(id).then((group) => {
-                        Node.findAll({
-                            where: {
-                                id: req.body.nodeIds,
-                            },
-                        })
-                            .then((nodes) => {
-                                group.setNodes(nodes);
-                                res.send({
-                                    message: "群组及关联节点更新成功。",
-                                });
-                            })
-                            .catch((err) => {
-                                res.status(500).send({
-                                    message:
-                                        err.message ||
-                                        "更新关联节点时发生错误。",
-                                });
-                            });
-                    });
-                } else {
-                    res.send({
-                        message: "群组更新成功。",
-                    });
-                }
-            } else {
-                res.send({
-                    message: `无法更新ID为${id}的群组。可能群组不存在或请求体为空！`,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `更新ID为${id}的群组时发生错误。`,
-            });
+    // 如果包含节点ID，调用updateGroupMembers
+    if (nodeIds && Array.isArray(nodeIds)) {
+        req.params.id = req.params.id;
+        req.body = { nodeIds }; // 只传递节点ID数组
+        return groupCoreController.updateGroupMembers(req, res);
+    } else {
+        // 其他属性更新暂不支持
+        return res.status(400).json({
+            success: false,
+            message: '只支持更新群组成员，其他属性更新不符合核心算法。'
         });
+    }
 };
 
-// 添加节点到群组
+// 添加节点到群组（通过调用更新群组成员）
 exports.addNode = (req, res) => {
     const groupId = req.params.id;
     const nodeId = req.params.nodeId;
 
-    Group.findByPk(groupId)
-        .then((group) => {
-            if (!group) {
-                res.status(404).send({
-                    message: `未找到ID为${groupId}的群组。`,
-                });
-                return;
-            }
+    // 首先获取当前群组
+    req.params.id = groupId;
 
-            Node.findByPk(nodeId)
-                .then((node) => {
-                    if (!node) {
-                        res.status(404).send({
-                            message: `未找到ID为${nodeId}的节点。`,
+    // 使用中间件模式传递当前请求到下一个处理函数
+    return groupCoreController.getGroupById(req, {
+        status: (code) => ({
+            json: (data) => {
+                if (code === 200 && data.success) {
+                    // 获取当前群组成员
+                    const currentNodeIds = data.data.memberNodeIds || [];
+
+                    // 检查节点是否已在群组中
+                    if (currentNodeIds.includes(nodeId)) {
+                        return res.status(400).json({
+                            success: false,
+                            message: '节点已经是群组成员'
                         });
-                        return;
                     }
 
-                    group.addNode(node);
-                    res.send({
-                        message: `成功将节点添加到群组。`,
-                    });
-                })
-                .catch((err) => {
-                    res.status(500).send({
-                        message: err.message || "添加节点时发生错误。",
-                    });
-                });
+                    // 添加新节点
+                    const updatedNodeIds = [...currentNodeIds, nodeId];
+
+                    // 调用更新群组成员接口
+                    req.body = { nodeIds: updatedNodeIds };
+                    return groupCoreController.updateGroupMembers(req, res);
+                } else {
+                    // 返回原始响应
+                    return res.status(code).json(data);
+                }
+            },
+            send: (data) => res.status(code).send(data)
         })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "添加节点时发生错误。",
-            });
-        });
+    });
 };
 
-// 从群组移除节点
+// 从群组移除节点（通过调用更新群组成员）
 exports.removeNode = (req, res) => {
     const groupId = req.params.id;
     const nodeId = req.params.nodeId;
 
-    Group.findByPk(groupId)
-        .then((group) => {
-            if (!group) {
-                res.status(404).send({
-                    message: `未找到ID为${groupId}的群组。`,
-                });
-                return;
-            }
+    // 首先获取当前群组
+    req.params.id = groupId;
 
-            Node.findByPk(nodeId)
-                .then((node) => {
-                    if (!node) {
-                        res.status(404).send({
-                            message: `未找到ID为${nodeId}的节点。`,
+    // 使用中间件模式传递当前请求到下一个处理函数
+    return groupCoreController.getGroupById(req, {
+        status: (code) => ({
+            json: (data) => {
+                if (code === 200 && data.success) {
+                    // 获取当前群组成员
+                    const currentNodeIds = data.data.memberNodeIds || [];
+
+                    // 检查节点是否在群组中
+                    if (!currentNodeIds.includes(nodeId)) {
+                        return res.status(400).json({
+                            success: false,
+                            message: '节点不是群组成员'
                         });
-                        return;
                     }
 
-                    group.removeNode(node);
-                    res.send({
-                        message: `成功从群组移除节点。`,
-                    });
-                })
-                .catch((err) => {
-                    res.status(500).send({
-                        message: err.message || "移除节点时发生错误。",
-                    });
-                });
+                    // 移除节点
+                    const updatedNodeIds = currentNodeIds.filter(id => id !== nodeId);
+
+                    // 调用更新群组成员接口
+                    req.body = { nodeIds: updatedNodeIds };
+                    return groupCoreController.updateGroupMembers(req, res);
+                } else {
+                    // 返回原始响应
+                    return res.status(code).json(data);
+                }
+            },
+            send: (data) => res.status(code).send(data)
         })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "移除节点时发生错误。",
-            });
-        });
+    });
 };
 
-// 删除群组
+// 删除群组（保留但标记为废弃，因为核心算法中没有对应的删除操作）
 exports.delete = (req, res) => {
-    const id = req.params.id;
-
-    Group.destroy({
-        where: { id: id },
-    })
-        .then((num) => {
-            if (num == 1) {
-                res.send({
-                    message: "群组删除成功！",
-                });
-            } else {
-                res.send({
-                    message: `无法删除ID为${id}的群组。可能群组不存在！`,
-                });
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: `删除ID为${id}的群组时发生错误。`,
-            });
-        });
+    return res.status(400).json({
+        success: false,
+        message: '删除群组操作与核心算法不符，已被废弃。请使用更新状态功能将群组标记为非活动。'
+    });
 };
