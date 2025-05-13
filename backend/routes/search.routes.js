@@ -7,7 +7,7 @@
  */
 const { verifyToken, hasPermission } = require("../middleware/auth.middleware");
 
-module.exports = app => {
+module.exports = (app) => {
     const searches = require("../controllers/search.controller.js");
     const router = require("express").Router();
 
@@ -41,7 +41,11 @@ module.exports = app => {
      * 包括总搜索次数、成功率、平均执行时间等
      * 需要管理员权限
      */
-    router.get("/stats", [verifyToken, hasPermission("admin")], searches.getStats);
+    router.get(
+        "/stats",
+        [verifyToken, hasPermission("admin")],
+        searches.getStats
+    );
 
     /**
      * 获取单个搜索详情

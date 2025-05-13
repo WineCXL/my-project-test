@@ -5,7 +5,7 @@
  */
 
 // 导入核心算法控制器
-const groupCoreController = require('./core/group.controller');
+const groupCoreController = require("./core/group.controller");
 
 // 创建新群组
 exports.create = groupCoreController.createGroup;
@@ -41,7 +41,7 @@ exports.update = (req, res) => {
         // 其他属性更新暂不支持
         return res.status(400).json({
             success: false,
-            message: '只支持更新群组成员，其他属性更新不符合核心算法。'
+            message: "只支持更新群组成员，其他属性更新不符合核心算法。",
         });
     }
 };
@@ -66,7 +66,7 @@ exports.addNode = (req, res) => {
                     if (currentNodeIds.includes(nodeId)) {
                         return res.status(400).json({
                             success: false,
-                            message: '节点已经是群组成员'
+                            message: "节点已经是群组成员",
                         });
                     }
 
@@ -81,8 +81,8 @@ exports.addNode = (req, res) => {
                     return res.status(code).json(data);
                 }
             },
-            send: (data) => res.status(code).send(data)
-        })
+            send: (data) => res.status(code).send(data),
+        }),
     });
 };
 
@@ -106,12 +106,14 @@ exports.removeNode = (req, res) => {
                     if (!currentNodeIds.includes(nodeId)) {
                         return res.status(400).json({
                             success: false,
-                            message: '节点不是群组成员'
+                            message: "节点不是群组成员",
                         });
                     }
 
                     // 移除节点
-                    const updatedNodeIds = currentNodeIds.filter(id => id !== nodeId);
+                    const updatedNodeIds = currentNodeIds.filter(
+                        (id) => id !== nodeId
+                    );
 
                     // 调用更新群组成员接口
                     req.body = { nodeIds: updatedNodeIds };
@@ -121,15 +123,13 @@ exports.removeNode = (req, res) => {
                     return res.status(code).json(data);
                 }
             },
-            send: (data) => res.status(code).send(data)
-        })
+            send: (data) => res.status(code).send(data),
+        }),
     });
 };
 
-// 删除群组（保留但标记为废弃，因为核心算法中没有对应的删除操作）
+// 删除群组
 exports.delete = (req, res) => {
-    return res.status(400).json({
-        success: false,
-        message: '删除群组操作与核心算法不符，已被废弃。请使用更新状态功能将群组标记为非活动。'
-    });
+    // 将req.params.id传递给deleteGroup方法
+    return groupCoreController.deleteGroup(req, res);
 };

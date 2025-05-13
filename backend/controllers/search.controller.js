@@ -1,6 +1,6 @@
 const db = require("../models");
-const Search = db.searchrecords;
-const User = db.users;
+const Search = db.SearchRecord;
+const User = db.User;
 
 // 创建搜索记录
 exports.create = (req, res) => {
@@ -92,7 +92,9 @@ exports.getStats = (req, res) => {
     const startDate = req.query.startDate
         ? new Date(req.query.startDate)
         : new Date(new Date().setDate(new Date().getDate() - 30)); // 默认过去30天
-    const endDate = req.query.endDate ? new Date(req.query.endDate) : new Date();
+    const endDate = req.query.endDate
+        ? new Date(req.query.endDate)
+        : new Date();
 
     // 添加一天到结束日期，确保包含当天的记录
     endDate.setDate(endDate.getDate() + 1);
@@ -151,12 +153,18 @@ exports.getStats = (req, res) => {
                                 "date",
                             ],
                             [
-                                db.Sequelize.fn("COUNT", db.Sequelize.col("id")),
+                                db.Sequelize.fn(
+                                    "COUNT",
+                                    db.Sequelize.col("id")
+                                ),
                                 "count",
                             ],
                         ],
                         group: [
-                            db.Sequelize.fn("DATE", db.Sequelize.col("searchTime")),
+                            db.Sequelize.fn(
+                                "DATE",
+                                db.Sequelize.col("searchTime")
+                            ),
                         ],
                         order: [
                             [
@@ -189,7 +197,9 @@ exports.getStats = (req, res) => {
                                         dateRange: {
                                             startDate,
                                             endDate: new Date(
-                                                endDate.setDate(endDate.getDate() - 1)
+                                                endDate.setDate(
+                                                    endDate.getDate() - 1
+                                                )
                                             ),
                                         },
                                     });

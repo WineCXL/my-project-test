@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 
 module.exports = {
     HOST: process.env.DB_HOST,
@@ -10,6 +10,6 @@ module.exports = {
         max: 5,
         min: 0,
         acquire: 30000,
-        idle: 10000
-    }
-}; 
+        idle: 10000,
+    },
+};
