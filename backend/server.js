@@ -247,19 +247,19 @@ app.listen(port, () => {
 });
 
 // 添加未捕获异常处理器
-process.on('uncaughtException', (err) => {
-  console.error('未捕获的异常，但服务器不会崩溃:', err);
+process.on("uncaughtException", (err) => {
+    console.error("未捕获的异常，但服务器不会崩溃:", err);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('未处理的Promise拒绝，但服务器不会崩溃:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("未处理的Promise拒绝，但服务器不会崩溃:", reason);
 });
 
 // 如果要干净地关闭服务器，可以在接收到终止信号时关闭
-process.on('SIGTERM', () => {
-  console.info('SIGTERM信号收到，关闭服务器');
-  server.close(() => {
-    console.log('服务器已关闭');
-    process.exit(0);
-  });
+process.on("SIGTERM", () => {
+    console.info("SIGTERM信号收到，关闭服务器");
+    server.close(() => {
+        console.log("服务器已关闭");
+        process.exit(0);
+    });
 });
