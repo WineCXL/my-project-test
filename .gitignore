@@ -5,7 +5,7 @@
 # ================
 
 # ----------
-# 构建目录和编译产物
+# 构建目录和编译产物 (保留用于libs/miracl库)
 # ----------
 build/              # CMake生成的构建目录(由CMake构建过程生成 | 包含大量临时文件且体积庞大)
 *.obj               # 编译器生成的中间对象文件(由C++编译器生成 | 属于中间产物无需版本控制)
@@ -14,6 +14,10 @@ build/              # CMake生成的构建目录(由CMake构建过程生成 | �
 *.pdb               # 程序调试数据库文件(由VS编译器生成 | 仅供调试使用且体积庞大)
 *.ilk               # 增量链接文件(由VS链接器生成 | 用于加速开发期间的链接过程 | 临时文件)
 *.dll               # 动态链接库文件(由C++链接器或Node.js原生模块生成 | 二进制文件且特定于平台)
+
+# 明确不忽略libs/miracl和basic的源码
+!libs/miracl/
+!basic/
 
 # ----------
 # 依赖管理目录
@@ -34,6 +38,7 @@ node_modules/       # Node.js依赖目录(由npm/yarn自动生成 | 体积极大
 .env.test           # 测试环境变量文件(由开发者创建 | 包含测试环境的配置 | 可能含敏感信息)
 .env.production     # 生产环境变量文件(由开发者创建 | 包含生产环境的配置 | 通常含敏感信息)
 *.env.*             # 所有环境变量文件(由开发者创建 | 包含不同环境的配置 | 通常含敏感信息)
+*.local             # 本地配置文件(通常包含特定于开发者本地环境的配置)
 
 # ----------
 # IDE/编辑器特定文件
@@ -46,9 +51,8 @@ node_modules/       # Node.js依赖目录(由npm/yarn自动生成 | 体积极大
 *.suo               # Visual Studio解决方案用户选项(由VS生成 | 包含用户会话状态)
 *.sln               # Visual Studio解决方案文件(由CMake生成 | 避免手动管理造成冲突)
 *.vcxproj*          # Visual Studio项目文件(由CMake生成 | 避免手动管理造成冲突)
-.project            # Eclipse项目文件(由Eclipse生成 | 特定于用户环境)
-.classpath          # Eclipse类路径文件(由Eclipse生成 | 特定于用户环境)
-.settings/          # Eclipse设置目录(由Eclipse生成 | 包含用户特定配置)
+*.ntvs*             # Node.js Tools for Visual Studio文件
+*.njsproj           # Node.js项目文件(Visual Studio)
 
 # ----------
 # 系统/临时文件
@@ -60,7 +64,11 @@ Thumbs.db           # Windows缩略图缓存(由Windows资源管理器自动生�
 npm-debug.log*      # NPM调试日志(由npm运行出错时生成 | 用于调试且无需保留)
 yarn-debug.log*     # Yarn调试日志(由yarn运行出错时生成 | 用于调试且无需保留)
 yarn-error.log*     # Yarn错误日志(由yarn运行出错时生成 | 用于调试且无需保留)
+pnpm-debug.log*     # PNPM调试日志(由pnpm运行出错时生成 | 用于调试且无需保留)
 lerna-debug.log*    # Lerna调试日志(由lerna运行出错时生成 | 用于调试且无需保留)
+*.sw?               # Vim临时文件
+.tmp/               # 临时目录
+.temp/              # 临时目录
 
 # ----------
 # CMake生成文件
@@ -74,13 +82,13 @@ Makefile            # CMake生成的Makefile(由CMake为类Unix系统生成 | �
 # ----------
 # 前端构建目录
 # ----------
+dist/               # 分发目录(由打包工具生成 | 用于发布的构建产物 | 可从源码重建)
+dist-ssr/           # SSR构建输出目录(由Vite等工具生成 | 可通过源码重建)
 frontend/dist/      # 前端构建输出目录(由webpack/vite等构建工具生成 | 可通过源码重建)
 frontend/build/     # 前端构建目录(由React等框架的构建脚本生成 | 可通过源码重建)
 frontend/.cache/    # 前端构建缓存(由webpack/babel等工具生成 | 加速构建的临时文件)
 frontend/public/dist/  # 前端公共资源构建目录(由构建工具生成 | 可通过源码重建)
 .sass-cache/        # Sass缓存目录(由Sass编译器生成 | 临时文件可重建)
-.vercel             # Vercel部署配置(由Vercel CLI生成 | 包含部署特定信息)
-.netlify            # Netlify部署配置(由Netlify CLI生成 | 包含部署特定信息)
 
 # ----------
 # 后端特定文件
@@ -89,15 +97,6 @@ backend/dist/       # 后端构建输出目录(由TypeScript编译器或打包�
 backend/logs/       # 后端日志目录(由应用程序运行时生成 | 包含临时运行信息)
 backend/uploads/    # 上传文件目录(包含用户上传内容 | 属于数据而非源代码)
 backend/coverage/   # 后端测试覆盖率报告(由Jest等测试框架生成 | 可重新生成)
-
-# ----------
-# 文档生成
-# ----------
-docs/_build/        # 文档构建输出目录(由Sphinx等文档工具生成 | 可通过源文档重建)
-docs/_static/       # 文档静态文件目录(由文档工具生成或手动添加 | 可重建)
-docs/_templates/    # 文档模板目录(由文档工具使用 | 可视为源码但通常标准化)
-docs/api/_build/    # API文档构建目录(由JSDoc/Doxygen等工具生成 | 可通过代码注释重建)
-docs/examples/_build/ # 示例文档构建目录(由文档工具生成 | 可通过源码重建)
 
 # ----------
 # 测试输出
@@ -114,4 +113,3 @@ DartConfiguration.tcl # CTest配置文件(由CMake的testing功能生成 | 可�
 # 安装目录
 # ----------
 install/            # 安装目录(由安装脚本生成 | 包含安装的文件 | 可重新安装生成)
-dist/               # 分发目录(由打包工具生成 | 用于发布的构建产物 | 可从源码重建)

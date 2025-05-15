@@ -31,7 +31,9 @@ module.exports = (app) => {
      * 包含搜索关键词、结果、执行时间等信息
      * 需要用户登录
      */
+    /*
     router.get("/", [verifyToken], searches.findAll);
+    */
 
     /**
      * 获取搜索统计
@@ -41,11 +43,13 @@ module.exports = (app) => {
      * 包括总搜索次数、成功率、平均执行时间等
      * 需要管理员权限
      */
+    /*
     router.get(
         "/stats",
         [verifyToken, hasPermission("admin")],
         searches.getStats
     );
+    */
 
     /**
      * 获取单个搜索详情
@@ -56,10 +60,14 @@ module.exports = (app) => {
      * 需要用户登录
      * @param {string} id - 搜索操作ID
      */
-    router.get("/:id", [verifyToken], searches.findOne);
+    /*
+        router.get("/:id", [verifyToken], searches.findOne);
+    */
 
     // 删除搜索记录
+    /*
     router.delete("/:id", searches.delete);
+    */
 
     // 注册路由
     app.use("/api/searches", router);

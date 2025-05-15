@@ -11,7 +11,7 @@ const User = require("./User");
 const Node = require("./Node");
 const Group = require("./Group");
 const NodeGroup = require("./NodeGroup");
-const { Document, Keyword } = require("./Document");
+const { Document, Keyword, DocumentKeyword } = require("./Document");
 
 // 设置模型
 db.User = User;
@@ -20,7 +20,9 @@ db.Group = Group;
 db.NodeGroup = NodeGroup;
 db.Document = Document;
 db.Keyword = Keyword;
+db.DocumentKeyword = DocumentKeyword;
 
+/*
 // 陷门模型 - 论文方案核心
 db.Trapdoor = sequelize.define(
     "Trapdoor",
@@ -60,7 +62,9 @@ db.Trapdoor = sequelize.define(
         timestamps: true,
     }
 );
+*/
 
+/*
 // 搜索记录模型
 db.SearchRecord = sequelize.define(
     "SearchRecord",
@@ -95,7 +99,9 @@ db.SearchRecord = sequelize.define(
         timestamps: true,
     }
 );
+*/
 
+/*
 // 资源模型 - 论文方案核心
 db.Resource = sequelize.define(
     "Resource",
@@ -155,14 +161,25 @@ db.Resource = sequelize.define(
         timestamps: true,
     }
 );
+*/
 
 // 节点与群组的关联
 db.Node.belongsTo(db.Group, { as: "group", foreignKey: "groupId" });
 db.Group.hasMany(db.Node, { as: "nodes", foreignKey: "groupId" });
 
+// 文档关键词与群组的关联
+db.DocumentKeyword.belongsTo(db.Group, { foreignKey: "assignedGroupId" });
+db.Group.hasMany(db.DocumentKeyword, { foreignKey: "assignedGroupId" });
+
+// 文档与用户的关联
+db.Document.belongsTo(db.User, { foreignKey: "userId" });
+db.User.hasMany(db.Document, { foreignKey: "userId" });
+
+/*
 // 资源与群组和用户的关联
 db.Resource.belongsTo(db.Group, { foreignKey: "groupId", as: "resourceGroup" });
 db.Resource.belongsTo(db.User, { foreignKey: "userId" });
+*/
 
 // 导出整个数据库对象
 module.exports = db;

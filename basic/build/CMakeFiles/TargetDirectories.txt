@@ -1,0 +1,4 @@
+E:/studying/source/VS Code/MIRACLTest/build/CMakeFiles/miracl_ext.dir
+E:/studying/source/VS Code/MIRACLTest/build/CMakeFiles/scheme1.dir
+E:/studying/source/VS Code/MIRACLTest/build/CMakeFiles/ALL_BUILD.dir
+E:/studying/source/VS Code/MIRACLTest/build/CMakeFiles/ZERO_CHECK.dir

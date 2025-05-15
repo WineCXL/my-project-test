@@ -1,0 +1,25 @@
+{
+  "name": "crypto-engine",
+  "version": "1.0.0",
+  "description": "C++ wrapper for MIRACL cryptographic library",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "install": "node-gyp rebuild",
+    "build": "node-gyp rebuild",
+    "clean": "node-gyp clean",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cryptography",
+    "miracl",
+    "security",
+    "encryption"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "gypfile": true
+}

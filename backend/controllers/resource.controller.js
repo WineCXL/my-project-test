@@ -15,18 +15,40 @@ const NodeGroup = db.NodeGroup;
  */
 exports.findPendingDocuments = async (req, res) => {
     try {
-        // 查询所有待处理的文档
-        const pendingDocs = await Document.findAll({
-            where: {
-                executionStatus: "pending",
-                assignedGroupId: null,
-            },
+        // 使用与documents/user相同的查询方式
+        const documents = await db.Document.findAll({
+            include: [
+                {
+                    model: db.DocumentKeyword,
+                    where: { status: "pending" },
+                    attributes: ['keywordMatched', 'status', 'assignedGroupId', 'createdAt', 'updatedAt']
+                },
+                {
+                    model: db.Keyword,
+                    attributes: ['keywordId']
+                }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+
+        // 使用相同的格式
+        const formattedDocuments = documents.map(doc => {
+            const docJson = doc.toJSON();
+            return {
+                id: docJson.id,
+                documentId: docJson.documentId,
+                title: docJson.title,
+                createdAt: docJson.createdAt,
+                keywords: docJson.Keyword ? docJson.Keyword.keywordId : null,
+                executionStatus: docJson.DocumentKeyword ? docJson.DocumentKeyword.status : 'pending',
+                keywordMatched: docJson.DocumentKeyword ? docJson.DocumentKeyword.keywordMatched : false,
+                assignedGroupId: docJson.DocumentKeyword ? docJson.DocumentKeyword.assignedGroupId : null,
+            };
         });
 
         return res.status(200).json({
             success: true,
-            count: pendingDocs.length,
-            data: pendingDocs,
+            data: formattedDocuments
         });
     } catch (error) {
         console.error("获取待处理文档失败:", error);
@@ -45,23 +67,40 @@ exports.findPendingDocuments = async (req, res) => {
  */
 exports.findExecutingDocuments = async (req, res) => {
     try {
-        // 查询所有执行中的文档
-        const executingDocs = await Document.findAll({
-            where: {
-                executionStatus: "executing",
-            },
+        // 使用与documents/user相同的查询方式
+        const documents = await db.Document.findAll({
             include: [
                 {
-                    model: Group,
-                    attributes: ["id", "groupId", "groupName", "status"],
+                    model: db.DocumentKeyword,
+                    where: { status: "executing" },
+                    attributes: ['keywordMatched', 'status', 'assignedGroupId', 'createdAt', 'updatedAt']
                 },
+                {
+                    model: db.Keyword,
+                    attributes: ['keywordId']
+                }
             ],
+            order: [['createdAt', 'DESC']]
+        });
+
+        // 使用相同的格式
+        const formattedDocuments = documents.map(doc => {
+            const docJson = doc.toJSON();
+            return {
+                id: docJson.id,
+                documentId: docJson.documentId,
+                title: docJson.title,
+                createdAt: docJson.createdAt,
+                keywords: docJson.Keyword ? docJson.Keyword.keywordId : null,
+                executionStatus: docJson.DocumentKeyword ? docJson.DocumentKeyword.status : 'pending',
+                keywordMatched: docJson.DocumentKeyword ? docJson.DocumentKeyword.keywordMatched : false,
+                assignedGroupId: docJson.DocumentKeyword ? docJson.DocumentKeyword.assignedGroupId : null,
+            };
         });
 
         return res.status(200).json({
             success: true,
-            count: executingDocs.length,
-            data: executingDocs,
+            data: formattedDocuments
         });
     } catch (error) {
         console.error("获取执行中文档失败:", error);
@@ -72,6 +111,7 @@ exports.findExecutingDocuments = async (req, res) => {
         });
     }
 };
+
 
 /**
  * 将文档分配给节点组
@@ -208,10 +248,13 @@ exports.completeDocument = async (req, res) => {
             executionStatus: "completed",
         });
 
-        // 释放群组资源
-        await group.update({
-            status: "idle",
-        });
+        // 确保释放群组资源
+        if (group) {
+            await group.update({
+                status: "idle",
+            });
+            console.log(`释放群组 #${group.id} (${group.groupName})`);
+        }
 
         return res.status(200).json({
             success: true,
@@ -336,4 +379,4 @@ exports.autoAllocate = async (req, res) => {
             error: error.message,
         });
     }
-};
+}

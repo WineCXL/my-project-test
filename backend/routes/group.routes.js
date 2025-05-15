@@ -5,13 +5,14 @@ const Group = db.Group;
 const Node = db.Node;
 const NodeGroup = db.NodeGroup;
 const { Op } = require("sequelize");
+const crypto = require('crypto'); // 添加crypto模块
 const groupController = require("../controllers/core/group.controller");
 
 // 获取所有群组
 router.get("/", async (req, res) => {
     try {
         const groups = await Group.findAll({
-            attributes: { exclude: ["secretKey"] },
+            attributes: { exclude: ["publicKeysR", "publicKeysPhi"] }, 
             order: [["createdAt", "DESC"]],
         });
 
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const group = await Group.findByPk(req.params.id, {
-            attributes: { exclude: ["secretKey"] },
+            attributes: { exclude: ["publicKeysR", "publicKeysPhi"] }, // 修改：排除公钥而不是secretKey
         });
 
         if (!group) {
@@ -59,13 +60,34 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// 创建群组
-router.post("/", groupController.createGroup);
+// 创建群组 - 仍然使用groupController.createGroup处理逻辑核心
+// 但在路由层添加中间件预处理，生成随机公钥
+router.post("/", async (req, res, next) => {
+    try {
+        // 生成随机公钥，将在groupController.createGroup中使用
+        // 这些随机值在理论上是通过特定算法计算得到的，但我们简化为随机生成
+        req.publicKeys = {
+            R: crypto.randomBytes(32).toString('hex'), // 64位十六进制
+            Phi: crypto.randomBytes(16).toString('hex'), // 32位十六进制
+        };
+        //console.log(`加密引擎生成群组公钥: R=${req.publicKeys.R}, Phi=${req.publicKeys.Phi}`);
+
+        // 继续处理请求
+        next();
+    } catch (error) {
+        //console.error("加密引擎生成群组公钥失败:", error);
+        return res.status(500).json({
+            success: false,
+            message: "加密引擎生成群组公钥失败",
+            error: error.message,
+        });
+    }
+}, groupController.createGroup);
 
 // 更新群组
 router.put("/:id", async (req, res) => {
     try {
-        const { groupName, secretKey, status, nodeIds } = req.body;
+        const { groupName, status, nodeIds } = req.body;
         const groupId = req.params.id;
 
         // 检查群组是否存在
@@ -77,10 +99,21 @@ router.put("/:id", async (req, res) => {
             });
         }
 
+        // 如果需要重新生成公钥
+        let publicKeysR = group.publicKeysR;
+        let publicKeysPhi = group.publicKeysPhi;
+
+        if (req.body.regenerateKeys) {
+            publicKeysR = crypto.randomBytes(32).toString('hex'); // 64位十六进制
+            publicKeysPhi = crypto.randomBytes(16).toString('hex'); // 32位十六进制
+            console.log(`重新生成群组公钥: R=${publicKeysR}, Phi=${publicKeysPhi}`);
+        }
+
         // 更新群组信息
         await group.update({
             groupName: groupName || group.groupName,
-            secretKey: secretKey || group.secretKey,
+            publicKeysR: publicKeysR, // 使用R部分公钥
+            publicKeysPhi: publicKeysPhi, // 使用Phi部分公钥
             status: status || group.status,
         });
 

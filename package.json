@@ -1,0 +1,33 @@
+{
+  "name": "@backend/miracl-test",
+  "version": "1.0.0",
+  "description": "MIRACL加密库测试项目",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "bindings": "^1.5.0",
+    "crypto_engine_js": "file:backend/lib/crypto_engine_js",
+    "jsonwebtoken": "^9.0.2",
+    "node-addon-api": "^8.3.1",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "node-gyp": "^11.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WineCXL/my-project-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WineCXL/my-project-test/issues"
+  },
+  "homepage": "https://github.com/WineCXL/my-project-test#readme"
+}

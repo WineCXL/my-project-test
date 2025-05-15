@@ -1,0 +1,10 @@
+^E:\STUDYING\SOURCE\VS CODE\MIRACLTEST\BUILD\CMAKEFILES\B6945944EEAD26D409777BA2FF0CF89F\GENERATE.STAMP.RULE
+setlocal
+"D:\Program Files\CMake\bin\cmake.exe" "-SE:/studying/source/VS Code/MIRACLTest" "-BE:/studying/source/VS Code/MIRACLTest/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "E:/studying/source/VS Code/MIRACLTest/build/MIRACLTest.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

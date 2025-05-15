@@ -1,0 +1,45 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(..)", "..\..", "{36257327-00FE-FF6D-A8D9-AFEE3537DAF0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(..)", "..\..\..", "{DD240FE5-4D88-9C6C-E7C8-07717FEFF861}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(..)", "..\..\..\..", "{DDCEA4D0-6852-D253-DD6E-F4F64DF52AEE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(node_modules)", "..\..\..\..\node_modules", "{9CAA5205-28C1-4BBC-6B1F-74C06DB555A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(node-addon-api)", "..\..\..\..\node_modules\node-addon-api", "{8A1D95E2-79E7-A21C-D6BB-375C96275EC1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nothing", "..\..\..\node_modules\node-addon-api\nothing.vcxproj", "{867A6B86-2602-DF4A-6399-79A01BCD6191}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "crypto_engine", "crypto_engine.vcxproj", "{804F0E98-8D19-4B31-3BA0-0EC97F23CE53}"
+	ProjectSection(ProjectDependencies) = postProject
+		{867A6B86-2602-DF4A-6399-79A01BCD6191} = {867A6B86-2602-DF4A-6399-79A01BCD6191}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{804F0E98-8D19-4B31-3BA0-0EC97F23CE53}.Debug|x64.ActiveCfg = Debug|x64
+		{804F0E98-8D19-4B31-3BA0-0EC97F23CE53}.Debug|x64.Build.0 = Debug|x64
+		{804F0E98-8D19-4B31-3BA0-0EC97F23CE53}.Release|x64.ActiveCfg = Release|x64
+		{804F0E98-8D19-4B31-3BA0-0EC97F23CE53}.Release|x64.Build.0 = Release|x64
+		{867A6B86-2602-DF4A-6399-79A01BCD6191}.Debug|x64.ActiveCfg = Debug|x64
+		{867A6B86-2602-DF4A-6399-79A01BCD6191}.Debug|x64.Build.0 = Debug|x64
+		{867A6B86-2602-DF4A-6399-79A01BCD6191}.Release|x64.ActiveCfg = Release|x64
+		{867A6B86-2602-DF4A-6399-79A01BCD6191}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DD240FE5-4D88-9C6C-E7C8-07717FEFF861} = {36257327-00FE-FF6D-A8D9-AFEE3537DAF0}
+		{DDCEA4D0-6852-D253-DD6E-F4F64DF52AEE} = {DD240FE5-4D88-9C6C-E7C8-07717FEFF861}
+		{9CAA5205-28C1-4BBC-6B1F-74C06DB555A9} = {DDCEA4D0-6852-D253-DD6E-F4F64DF52AEE}
+		{8A1D95E2-79E7-A21C-D6BB-375C96275EC1} = {9CAA5205-28C1-4BBC-6B1F-74C06DB555A9}
+		{867A6B86-2602-DF4A-6399-79A01BCD6191} = {8A1D95E2-79E7-A21C-D6BB-375C96275EC1}
+	EndGlobalSection
+EndGlobal
