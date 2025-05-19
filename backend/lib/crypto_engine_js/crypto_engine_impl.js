@@ -43,68 +43,68 @@ function generateHexString(length = 64) {
  * CryptoEngineImpl类，实现加密引擎的核心功能
  */
 class CryptoEngineImpl {
-  constructor() {
-    this.initialized = false;
-    this.registeredNodes = new Map(); // 节点ID -> 节点密钥
-    this.groups = new Map(); // 群组ID -> 成员节点ID列表
-    this.groupKeys = new Map(); // 群组ID -> 群组密钥
+    constructor() {
+        this.initialized = false;
+        this.registeredNodes = new Map(); // 节点ID -> 节点密钥
+        this.groups = new Map(); // 群组ID -> 成员节点ID列表
+        this.groupKeys = new Map(); // 群组ID -> 群组密钥
 
-    // G1群点缓存 (解决无法直接序列化G1点的问题)
-    this.cachedG1Points = new Map();
+        // G1群点缓存 (解决无法直接序列化G1点的问题)
+        this.cachedG1Points = new Map();
 
-    // 初始化系统
-    this.initializeMiracl();
-  }
+        // 初始化系统
+        this.initializeMiracl();
+    }
 
-  /**
-   * 1. 系统初始化 (Setup)
-   */
+    /**
+     * 1. 系统初始化 (Setup)
+     */
     async initializeMiracl() {
-    try {
+        try {
             // 初始化椭圆曲线
             this.ec = new EC("secp256k1");
 
-      // 生成系统基点P (G1群的生成元)
+            // 生成系统基点P (G1群的生成元)
             this.P = this.ec.g;
 
-      // 系统阶 (G1群的阶)
+            // 系统阶 (G1群的阶)
             this.order = this.ec.n;
 
-      // 生成系统主密钥 (随机数)
+            // 生成系统主密钥 (随机数)
             this.masterPrivateKey = new BN(crypto.randomBytes(32));
 
-      // 计算系统公钥 P_pub = masterKey * P
+            // 计算系统公钥 P_pub = masterKey * P
             this.masterPublicKey = this.P.mul(this.masterPrivateKey);
 
             // 初始化存储
             this.nodeIdentities = {}; // 存储节点身份标识
             this.groupInfo = {}; // 存储群组信息
 
-      this.initialized = true;
+            this.initialized = true;
             console.log("加密引擎初始化成功");
-    } catch (error) {
+        } catch (error) {
             console.error("初始化失败:", error);
-      this.initialized = false;
+            this.initialized = false;
             throw error;
+        }
     }
-  }
 
-  /**
-   * 系统设置
-   * @param {number} securityLevel - 安全级别
-   * @returns {boolean} - 设置是否成功
-   */
-  systemSetup(securityLevel) {
-    return this.initialized;
-  }
+    /**
+     * 系统设置
+     * @param {number} securityLevel - 安全级别
+     * @returns {boolean} - 设置是否成功
+     */
+    systemSetup(securityLevel) {
+        return this.initialized;
+    }
 
-  /**
-   * 2. 节点注册 (NodeReg)
-   * @param {string} nodeId - 节点ID
+    /**
+     * 2. 节点注册 (NodeReg)
+     * @param {string} nodeId - 节点ID
      * @returns {object} - {id, key, privateKey, randomNumber} 格式的对象
-   */
-  nodeRegistration(nodeId) {
-    if (!this.initialized) {
+     */
+    nodeRegistration(nodeId) {
+        if (!this.initialized) {
             throw new Error("加密引擎未初始化");
         }
 
@@ -134,44 +134,44 @@ class CryptoEngineImpl {
             console.error("节点注册失败:", error);
             throw new Error(`节点注册失败: ${error.message}`);
         }
-  }
-
-  /**
-   * 3. 群组生成 (GroupGen)
-   * @param {Array<string>} nodeIds - 群组成员的节点ID列表
-   * @returns {string} - 群组密钥
-   */
-  groupGeneration(nodeIds) {
-    if (!this.initialized) {
-            throw new Error("加密引擎未初始化");
     }
 
-    // 生成唯一的群组ID
+    /**
+     * 3. 群组生成 (GroupGen)
+     * @param {Array<string>} nodeIds - 群组成员的节点ID列表
+     * @returns {string} - 群组密钥
+     */
+    groupGeneration(nodeIds) {
+        if (!this.initialized) {
+            throw new Error("加密引擎未初始化");
+        }
+
+        // 生成唯一的群组ID
         const groupId = "group_" + Date.now() + "_" + this.groups.size;
 
-    // 验证所有节点都已注册
-    for (const nodeId of nodeIds) {
-      if (!this.registeredNodes.has(nodeId)) {
-        throw new Error(`节点 ${nodeId} 未注册`);
-      }
-    }
+        // 验证所有节点都已注册
+        for (const nodeId of nodeIds) {
+            if (!this.registeredNodes.has(nodeId)) {
+                throw new Error(`节点 ${nodeId} 未注册`);
+            }
+        }
 
-    // 创建群组
-    this.groups.set(groupId, nodeIds);
+        // 创建群组
+        this.groups.set(groupId, nodeIds);
 
         // 计算群组密钥 - 使用所有节点ID的哈希作为群组密钥
         const groupKey = hashToFixedHex(nodeIds.join(","));
-    this.groupKeys.set(groupId, groupKey);
+        this.groupKeys.set(groupId, groupKey);
 
-    return groupKey;
-  }
+        return groupKey;
+    }
 
-  /**
-   * 计算群组密钥
-   * @param {Array<string>} memberNodeIds - 群组成员的节点ID列表
-   * @returns {string} - 群组密钥
-   */
-  computeGroupKey(memberNodeIds) {
+    /**
+     * 计算群组密钥
+     * @param {Array<string>} memberNodeIds - 群组成员的节点ID列表
+     * @returns {string} - 群组密钥
+     */
+    computeGroupKey(memberNodeIds) {
         // 使用所有成员节点ID和它们的密钥计算哈希
         const nodeData = memberNodeIds
             .map((nodeId) => {
@@ -181,10 +181,10 @@ class CryptoEngineImpl {
 
         // 返回64位十六进制哈希
         return hashToFixedHex(nodeData);
-  }
+    }
 
-  /**
-   * 4. 关键词生成 (KeywordGen)
+    /**
+     * 4. 关键词生成 (KeywordGen)
      * 生成一个固定8位长度的随机原始关键词
      *
      * @returns {string} 随机生成的原始关键词
@@ -201,15 +201,15 @@ class CryptoEngineImpl {
         return randomStr;
     }
 
-  /**
-   * 5. 消息封装 (Encapsulation)
-   * @param {string} keyword - 关键词
-   * @param {string} metadata - 元数据
+    /**
+     * 5. 消息封装 (Encapsulation)
+     * @param {string} keyword - 关键词
+     * @param {string} metadata - 元数据
      * @param {string} groupId - 群组ID
-   * @returns {string} - 封装后的JSON结果
-   */
+     * @returns {string} - 封装后的JSON结果
+     */
     encapsulateKeyword(keyword, metadata, groupId) {
-    if (!this.initialized) {
+        if (!this.initialized) {
             throw new Error("加密引擎未初始化");
         }
 
@@ -231,14 +231,14 @@ class CryptoEngineImpl {
                 throw new Error(`找不到群组 ${groupId} 的公钥信息`);
             }
 
-            // 解析群组公钥，提取r部分 (在论文中，r是群组的公钥部分)
+            // 解析群组公钥，提取r部分
             const [pkrHex] = groupPublicKeyStr.split(":");
             const r = this.hexToPoint(pkrHex);
 
-            // 生成随机值y (在论文中，这是用于加密的随机数)
+            // 生成随机值y
             const y = new BN(crypto.randomBytes(32)).mod(this.order);
 
-            // 步骤1：计算 X = y·P (在论文中，P是系统基点)
+            // 步骤1：计算 X = y·P
             // 在C++实现中使用MIRACL的point_mul函数
             const X = this.P.mul(y);
 
@@ -254,7 +254,7 @@ class CryptoEngineImpl {
             // 在C++中使用MIRACL的pairing函数，这里用我们的乘法替代
             const e_h2_r = this.simulatePairing(h2_value, r);
 
-            // 步骤4：获取phi值 (在C++中，这是群组公钥的另一部分)
+            // 步骤4：获取phi值
             const [_, phiHex] = groupPublicKeyStr.split(":");
             const phi = Buffer.from(phiHex, "hex");
 
@@ -274,39 +274,39 @@ class CryptoEngineImpl {
                 .update(powered.toString())
                 .digest("hex");
 
-    // 生成唯一标识符并缓存X点
+            // 生成唯一标识符并缓存X点
             const cacheKey = Date.now() + "_" + this.cachedG1Points.size;
             this.cachedG1Points.set(cacheKey, this.pointToHex(X));
 
-    // 返回格式化的JSON结果
-    return JSON.stringify({
-      X_cache: cacheKey,
-      Y: Y,
+            // 返回格式化的JSON结果
+            return JSON.stringify({
+                X_cache: cacheKey,
+                Y: Y,
                 metadata: metadata,
                 groupId: groupId,
                 timestamp: Date.now(),
-    });
+            });
         } catch (error) {
             console.error("关键词封装错误:", error);
             throw new Error(`关键词封装失败: ${error.message}`);
         }
-  }
-
-  /**
-   * 6. 授权令牌生成 (TrapdoorGen)
-   * @param {string} keyword - 关键词
-   * @param {string} groupId - 群组ID
-   * @returns {string} - 授权令牌
-   */
-  searchTokenGeneration(keyword, groupId) {
-    if (!this.initialized) {
-            throw new Error("加密引擎未初始化");
     }
+
+    /**
+     * 6. 授权令牌生成 (TrapdoorGen)
+     * @param {string} keyword - 关键词
+     * @param {string} groupId - 群组ID
+     * @returns {string} - 授权令牌
+     */
+    searchTokenGeneration(keyword, groupId) {
+        if (!this.initialized) {
+            throw new Error("加密引擎未初始化");
+        }
 
         // 获取群组信息
         if (!this.groups.has(groupId)) {
-      throw new Error(`群组 ${groupId} 不存在`);
-    }
+            throw new Error(`群组 ${groupId} 不存在`);
+        }
 
         try {
             // 获取群组中的所有节点ID
@@ -364,65 +364,65 @@ class CryptoEngineImpl {
                 throw new Error(`群组 ${groupId} 中没有有效节点`);
             }
 
-    // 生成唯一标识符并缓存T点
+            // 生成唯一标识符并缓存T点
             const cacheKey = Date.now() + "_" + this.cachedG1Points.size;
             this.cachedG1Points.set(cacheKey, this.pointToHex(T));
 
-    // 返回格式化的JSON结果
-    return JSON.stringify({
+            // 返回格式化的JSON结果
+            return JSON.stringify({
                 cache_key: cacheKey,
                 groupId: groupId,
                 timestamp: Date.now(),
-    });
+            });
         } catch (error) {
             console.error("生成搜索令牌错误:", error);
             throw new Error(`生成搜索令牌失败: ${error.message}`);
         }
-  }
-
-  /**
-   * 搜索令牌生成的替代方法
-   * @param {string} groupId - 群组ID
-   * @param {string} keyword - 关键词
-   * @returns {string} - 授权令牌
-   */
-  generateSearchToken(groupId, keyword) {
-    return this.searchTokenGeneration(keyword, groupId);
-  }
-
-  /**
-   * 7. 授权测试 (AuthTest)
-   * @param {string} trapdoor - 陷门（搜索令牌）
-   * @param {string} encryptedMetadata - 加密的元数据
-   * @returns {boolean} - 是否匹配
-   */
-  verifyKeywordMatch(trapdoor, encryptedMetadata) {
-    if (!this.initialized) {
-            throw new Error("加密引擎未初始化");
     }
 
-    try {
-      // 解析JSON
-      const trapdoorObj = JSON.parse(trapdoor);
-      const encryptedMetadataObj = JSON.parse(encryptedMetadata);
+    /**
+     * 搜索令牌生成的替代方法
+     * @param {string} groupId - 群组ID
+     * @param {string} keyword - 关键词
+     * @returns {string} - 授权令牌
+     */
+    generateSearchToken(groupId, keyword) {
+        return this.searchTokenGeneration(keyword, groupId);
+    }
+
+    /**
+     * 7. 授权测试 (AuthTest)
+     * @param {string} trapdoor - 陷门（搜索令牌）
+     * @param {string} encryptedMetadata - 加密的元数据
+     * @returns {boolean} - 是否匹配
+     */
+    verifyKeywordMatch(trapdoor, encryptedMetadata) {
+        if (!this.initialized) {
+            throw new Error("加密引擎未初始化");
+        }
+
+        try {
+            // 解析JSON
+            const trapdoorObj = JSON.parse(trapdoor);
+            const encryptedMetadataObj = JSON.parse(encryptedMetadata);
 
             // 确保两者属于同一群组
             if (trapdoorObj.groupId !== encryptedMetadataObj.groupId) {
                 return false;
             }
 
-      // 获取缓存键
-      const tokenCacheKey = trapdoorObj.cache_key;
-      const metadataCacheKey = encryptedMetadataObj.X_cache;
-      const Y = encryptedMetadataObj.Y;
+            // 获取缓存键
+            const tokenCacheKey = trapdoorObj.cache_key;
+            const metadataCacheKey = encryptedMetadataObj.X_cache;
+            const Y = encryptedMetadataObj.Y;
 
-      // 从缓存获取椭圆曲线点
+            // 从缓存获取椭圆曲线点
             if (
                 !this.cachedG1Points.has(tokenCacheKey) ||
                 !this.cachedG1Points.has(metadataCacheKey)
             ) {
-        return false;
-      }
+                return false;
+            }
 
             // 陷门T是一个椭圆曲线点
             const THex = this.cachedG1Points.get(tokenCacheKey);
@@ -444,59 +444,59 @@ class CryptoEngineImpl {
                 .digest("hex");
 
             // 步骤3：验证等式 H3(e(T, X)) ?= Y
-      return hash_result === Y;
-    } catch (error) {
+            return hash_result === Y;
+        } catch (error) {
             console.error("关键词匹配验证错误:", error);
-      return false;
+            return false;
+        }
     }
-  }
 
-  /**
-   * 资源分配功能
-   * @param {string} trapdoor - 陷门（搜索令牌）
-   * @param {Array<string>} encryptedMetadataList - 加密元数据列表
-   * @param {Array<string>} edgeNodeIds - 边缘节点ID列表
-   * @returns {string} - 资源分配结果
-   */
+    /**
+     * 资源分配功能
+     * @param {string} trapdoor - 陷门（搜索令牌）
+     * @param {Array<string>} encryptedMetadataList - 加密元数据列表
+     * @param {Array<string>} edgeNodeIds - 边缘节点ID列表
+     * @returns {string} - 资源分配结果
+     */
     allocateResourcesAccordingToKeywords(
         trapdoor,
         encryptedMetadataList,
         edgeNodeIds
     ) {
-    if (!this.initialized) {
+        if (!this.initialized) {
             throw new Error("加密引擎未初始化");
-    }
+        }
 
-    // 存储匹配的元数据
-    const matchedMetadata = [];
+        // 存储匹配的元数据
+        const matchedMetadata = [];
 
-    // 遍历所有加密元数据
-    for (const encryptedMetadata of encryptedMetadataList) {
-      // 验证关键词匹配
-      if (this.verifyKeywordMatch(trapdoor, encryptedMetadata)) {
-        // 提取元数据
-        const metadata = JSON.parse(encryptedMetadata).metadata;
-        matchedMetadata.push(metadata);
-      }
-    }
+        // 遍历所有加密元数据
+        for (const encryptedMetadata of encryptedMetadataList) {
+            // 验证关键词匹配
+            if (this.verifyKeywordMatch(trapdoor, encryptedMetadata)) {
+                // 提取元数据
+                const metadata = JSON.parse(encryptedMetadata).metadata;
+                matchedMetadata.push(metadata);
+            }
+        }
 
-    // 如果没有匹配项，返回空结果
-    if (matchedMetadata.length === 0) {
+        // 如果没有匹配项，返回空结果
+        if (matchedMetadata.length === 0) {
             return "{}";
-    }
+        }
 
-    // 根据匹配的元数据分配资源
-    const allocatedResources = matchedMetadata.map((metadata, index) => {
-      // 为每个匹配的元数据分配边缘节点
-      const nodeIndex = index % edgeNodeIds.length;
-      return {
-        metadata: metadata,
+        // 根据匹配的元数据分配资源
+        const allocatedResources = matchedMetadata.map((metadata, index) => {
+            // 为每个匹配的元数据分配边缘节点
+            const nodeIndex = index % edgeNodeIds.length;
+            return {
+                metadata: metadata,
                 allocated_node: edgeNodeIds[nodeIndex],
-      };
-    });
+            };
+        });
 
-    // 返回资源分配结果
-    return JSON.stringify({
+        // 返回资源分配结果
+        return JSON.stringify({
             allocated_resources: allocatedResources,
         });
     }

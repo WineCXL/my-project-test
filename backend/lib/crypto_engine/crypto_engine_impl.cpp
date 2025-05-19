@@ -265,7 +265,7 @@ public:
 
         try
         {
-            // 生成随机关键字 (这里简单返回一个随机字符串)
+            // 生成随机关键字
             Big randomValue;
             pfc.random(randomValue);
 
