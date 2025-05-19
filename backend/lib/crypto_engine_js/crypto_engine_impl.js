@@ -335,13 +335,13 @@ class CryptoEngineImpl {
                 // 从注册节点获取密钥信息
                 const nodeInfo = this.registeredNodes.get(nodeId);
 
-                // 获取节点私钥si (直接使用存储的私钥)
+                // 获取节点私钥si
                 const si = new BN(nodeInfo.privateKey, 16);
 
-                // 获取节点随机值xi (直接使用存储的随机值)
+                // 获取节点随机值xi
                 const xi = new BN(nodeInfo.randomNumber, 16);
 
-                // 计算 si·P (将私钥映射到G1上的点)
+                // 计算 si·P
                 const si_point = this.P.mul(si);
 
                 // 计算 xi·H2(GroupID||keyword)
