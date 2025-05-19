@@ -12,7 +12,7 @@ const groupController = require("../controllers/core/group.controller");
 router.get("/", async (req, res) => {
     try {
         const groups = await Group.findAll({
-            attributes: { exclude: ["publicKeysR", "publicKeysPhi"] }, 
+            attributes: { exclude: ["publicKeysR", "publicKeysPhi"] },
             order: [["createdAt", "DESC"]],
         });
 
@@ -60,8 +60,7 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// 创建群组 - 仍然使用groupController.createGroup处理逻辑核心
-// 但在路由层添加中间件预处理，生成随机公钥
+// 创建群组
 router.post("/", async (req, res, next) => {
     try {
         // 生成随机公钥，将在groupController.createGroup中使用

@@ -574,13 +574,15 @@ exports.verifyGroup = async (req, res) => {
                     expectedRandomNumber = null;
             }
 
-            // 检查随机数是否匹配 - 简化输出
+            // 检查随机数是否匹配
             const isValid = currentRandomNumber === expectedRandomNumber;
             console.log(
                 `节点${nodeIndex}: ${node.nodeName} (ID: ${node.id}) - 验证${
                     isValid ? "通过" : "失败"
                 }`
             );
+            console.log(`  当前随机数: ${currentRandomNumber}`);
+            console.log(`  预期随机数: ${expectedRandomNumber}`);
 
             // 如果不匹配且节点状态不是error，则将节点标记为异常
             if (!isValid && node.status !== "error") {
