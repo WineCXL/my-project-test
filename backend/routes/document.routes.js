@@ -106,60 +106,88 @@ module.exports = (app) => {
 
     // 生成格式化的ID
     async function generateFormattedId(prefix, model) {
-        try {
-            // 查询该前缀的最大ID
-            let query = {};
-            let idField = 'id';
+        const maxRetries = 3; // 最大重试次数
+        let retryCount = 0;
 
-            // 针对不同模型使用不同的字段
-            if (prefix === 'keyWord') {
-                idField = 'keywordId';
-                query = {
-                    where: {
-                        keywordId: {
-                            [db.Sequelize.Op.like]: `${prefix}-%`
+        while (retryCount < maxRetries) {
+            // 开始事务
+            const t = await db.sequelize.transaction();
+
+            try {
+                // 查询该前缀的最大ID
+                let query = {};
+                let idField = "id";
+
+                // 针对不同模型使用不同的字段
+                if (prefix === "keyWord") {
+                    idField = "keywordId";
+                    query = {
+                        where: {
+                            keywordId: {
+                                [db.Sequelize.Op.like]: `${prefix}-%`,
+                            },
+                        },
+                        lock: t.LOCK.UPDATE, // 添加行锁
+                    };
+                } else if (prefix === "document") {
+                    idField = "documentId";
+                    query = {
+                        where: {
+                            documentId: {
+                                [db.Sequelize.Op.like]: `${prefix}-%`,
+                            },
+                        },
+                        lock: t.LOCK.UPDATE, // 添加行锁
+                    };
+                }
+
+                const items = await model.findAll({
+                    ...query,
+                    order: [[idField, "DESC"]],
+                    limit: 1,
+                    transaction: t,
+                });
+
+                // 获取编号
+                let number = 1;
+                if (items && items.length > 0) {
+                    const lastItem = items[0];
+                    const lastId = lastItem[idField];
+                    if (lastId) {
+                        const matches = lastId.toString().match(/-(\d+)$/);
+                        if (matches && matches[1]) {
+                            number = parseInt(matches[1], 10) + 1;
                         }
-                    }
-                };
-            } else if (prefix === 'document') {
-                idField = 'documentId';
-                query = {
-                    where: {
-                        documentId: {
-                            [db.Sequelize.Op.like]: `${prefix}-%`
-                        }
-                    }
-                };
-            }
-
-            const items = await model.findAll({
-                ...query,
-                order: [[idField, 'DESC']],
-                limit: 1
-            });
-
-            // 获取编号
-            let number = 1;
-            if (items && items.length > 0) {
-                const lastItem = items[0];
-                // 从数据库中最后一个ID提取编号，格式为"prefix-number"
-                const lastId = lastItem[idField];
-                if (lastId) {
-                    const matches = lastId.toString().match(/-(\d+)$/);
-                    if (matches && matches[1]) {
-                        number = parseInt(matches[1], 10) + 1;
                     }
                 }
-            }
 
-            // 返回格式化的ID
-            return `${prefix}-${number}`;
-        } catch (error) {
-            console.error(`生成${prefix} ID失败:`, error);
-            // 出错时生成带时间戳的随机ID，确保唯一性
-            const timestamp = Date.now().toString().slice(-6);
-            const random = Math.floor(Math.random() * 1000);
-            return `${prefix}-${timestamp}${random}`;
+                // 提交事务
+                await t.commit();
+
+                // 返回格式化的ID
+                return `${prefix}-${number}`;
+            } catch (error) {
+                // 回滚事务
+                await t.rollback();
+
+                // 如果是唯一约束错误，增加重试次数
+                if (error.name === "SequelizeUniqueConstraintError") {
+                    retryCount++;
+                    if (retryCount < maxRetries) {
+                        // 等待一小段时间后重试
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 100 * retryCount)
+                        );
+                        continue;
+                    }
+                }
+
+                console.error(`生成${prefix} ID失败:`, error);
+
+                // 使用UUID作为备选方案
+                const uuid = crypto.randomBytes(16).toString("hex");
+                return `${prefix}-${uuid}`;
+            }
         }
     }
 
@@ -193,7 +221,10 @@ module.exports = (app) => {
                     const content = fs.readFileSync(filePath, "utf8");
 
                     // 对内容进行SHA256哈希处理
-                    const contentHash = crypto.createHash('sha256').update(content).digest('hex');
+                    const contentHash = crypto
+                        .createHash("sha256")
+                        .update(content)
+                        .digest("hex");
 
                     // 清理临时文件
                     fs.unlinkSync(filePath);
@@ -209,7 +240,9 @@ module.exports = (app) => {
                     }
 
                     // 随机选择一个群组
-                    const randomIndex = Math.floor(Math.random() * groups.length);
+                    const randomIndex = Math.floor(
+                        Math.random() * groups.length
+                    );
                     const selectedGroup = groups[randomIndex];
 
                     // 生成X和Y
@@ -222,7 +255,10 @@ module.exports = (app) => {
                     console.log(`生成加密关键字: X=${keywordX}, Y=${keywordY}`);
 
                     // 生成格式化的关键词ID
-                    const keywordId = await generateFormattedId('keyWord', db.Keyword);
+                    const keywordId = await generateFormattedId(
+                        "keyWord",
+                        db.Keyword
+                    );
 
                     // 创建关键词记录
                     const keyword = await db.Keyword.create({
@@ -234,7 +270,10 @@ module.exports = (app) => {
                     });
 
                     // 生成格式化的文档ID
-                    const documentId = await generateFormattedId('document', db.Document);
+                    const documentId = await generateFormattedId(
+                        "document",
+                        db.Document
+                    );
 
                     // 创建文档记录
                     const document = await db.Document.create({
@@ -251,7 +290,7 @@ module.exports = (app) => {
                         keywordId: keyword.id,
                         keywordMatched: null, // 设置为null，等待验证
                         status: "pending",
-                        assignedGroupId: null
+                        assignedGroupId: null,
                     });
 
                     return res.status(200).json({
@@ -266,7 +305,9 @@ module.exports = (app) => {
                     console.error("文档处理过程中出错:", innerError);
                     return res.status(500).json({
                         success: false,
-                        message: "文档处理失败: " + (innerError.message || "未知错误"),
+                        message:
+                            "文档处理失败: " +
+                            (innerError.message || "未知错误"),
                     });
                 }
             });

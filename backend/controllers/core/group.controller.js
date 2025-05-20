@@ -625,6 +625,13 @@ exports.verifyGroup = async (req, res) => {
                     .map((n) => n.nodeName)
                     .join(", ")}`
             );
+            // 如果有异常节点，将群组状态更新为error
+            await group.update({ status: "error" });
+            console.log(`群组 ${group.groupName} 已标记为异常状态`);
+        } else {
+            // 如果没有异常节点，将群组状态更新为idle
+            await group.update({ status: "idle" });
+            console.log(`群组 ${group.groupName} 已标记为空闲状态`);
         }
 
         // 返回验证结果
@@ -637,6 +644,7 @@ exports.verifyGroup = async (req, res) => {
                 allValid: allValid,
                 verificationResults: verificationResults,
                 compromisedNodes: compromisedNodes,
+                groupStatus: group.status,
             },
         });
     } catch (error) {

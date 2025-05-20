@@ -98,7 +98,10 @@ function setupExecutionTimer() {
             const pendingDocKeywords = await db.DocumentKeyword.findAll({
                 where: {
                     status: "pending",
-                    keywordMatched: null, // 只处理尚未验证匹配的文档
+                    [db.Sequelize.Op.or]: [
+                        { keywordMatched: null },
+                        { keywordMatched: 1 },
+                    ],
                 },
                 include: [
                     {
