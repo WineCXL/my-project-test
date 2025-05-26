@@ -34,7 +34,6 @@ module.exports = (app) => {
 
     /**
      * 验证关键词匹配
-     * 只比较陷门值是否一致
      * @param {string} keywordX - X值
      * @param {string} keywordY - Y值
      * @param {string} trapdoor - 陷门值

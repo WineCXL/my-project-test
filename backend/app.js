@@ -138,7 +138,7 @@ function setupExecutionTimer() {
                             const keywordY = keyword.keywordY;
                             const trapdoor = keyword.trapdoorValue;
 
-                            // 使用全局函数进行验证
+                            // 使用匹配验证函数进行验证
                             const isMatched = global.verifyKeywordMatch(
                                 keywordX,
                                 keywordY,
