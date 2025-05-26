@@ -134,8 +134,7 @@ public:
                 pfc.random(xi);
             }
 
-            // 存储节点公钥、私钥和随机值
-            nodePublicKeys[nodeId] = qi;
+            // 存储节点私钥和随机值
             nodePrivateKeys[nodeId] = si;
             nodeRandomValues[nodeId] = xi;
 
