@@ -237,7 +237,7 @@ public:
             // 计算双线性配对 Φ = e(q_sum, Ppub)
             GT phi = pfc.pairing(q_sum, Ppub);
 
-            // 存储群组公钥和状态
+            // 存储群组公钥
             groupPublicKeysR[groupId] = r;
             groupPublicKeysPhi[groupId] = phi;
 
