@@ -127,8 +127,7 @@ exports.createGroup = async (req, res) => {
         }
         console.log(`✅ 节点同步完成`);
 
-        // 调用加密引擎生成群组密钥（在理论上）
-        // 这里我们只是把结果记录一下，实际上使用的是路由层生成的随机公钥
+        // 调用加密引擎生成群组密钥
         const groupKeyResult = CryptoEngine.groupGeneration(
             nodes.map((node) => node.nodeId)
         );
@@ -136,7 +135,7 @@ exports.createGroup = async (req, res) => {
         console.log(`    R=${publicKeys.R}`);
         console.log(`    Phi=${publicKeys.Phi}`);
 
-        // 创建新的群组记录，使用随机生成的公钥
+        // 创建新的群组记录
         const newGroup = await Group.create({
             groupId: groupId,
             groupName: groupName,
